@@ -1,6 +1,10 @@
 import 'dart:math';
 import 'dart:typed_data';
+import 'dart:ui';
 
+import 'package:buffer_image/buffer_image.dart';
+import 'package:buffer_image/src/blend_mode.dart';
+import 'package:buffer_image/src/private.dart';
 import 'package:buffer_image/src/sample_mode.dart';
 import 'package:flutter/painting.dart';
 
@@ -17,6 +21,15 @@ class BufferImage {
         _buffer = Uint8List(width * height * bytePerPixel);
 
   BufferImage._(this._buffer, this._width, this._height);
+
+  static Future<BufferImage> fromImage(Image image) async {
+    return BufferImage._(
+        (await image.toByteData(format: ImageByteFormat.rawRgba))!
+            .buffer
+            .asUint8List(),
+        image.width,
+        image.height);
+  }
 
   int get width {
     return _width;
@@ -42,12 +55,14 @@ class BufferImage {
     );
   }
 
+  /// 按比例缩放
   resize(double ratio, [SampleMode sample = SampleMode.nearest]) {
     int newWidth = (_width * ratio).round();
     int newHeight = (_height * ratio).round();
     resizeTo(newWidth, newHeight, sample);
   }
 
+  /// 缩放
   resizeTo(int newWidth, int newHeight,
       [SampleMode sample = SampleMode.nearest]) {
     Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
@@ -77,10 +92,109 @@ class BufferImage {
     _buffer = newBuffer;
   }
 
+  /// 旋转
+  rotate(double radian,
+      [Color bgColor = const Color.fromRGBO(255, 255, 255, 0),
+      clipCanvas = false]) {
+    int newWidth = _width;
+    int newHeight = _height;
+    if (!clipCanvas) {
+      newWidth = (sin(radian) * _width + cos(radian) * _height).ceil();
+      newHeight = (cos(radian) * _width + sin(radian) * _height).ceil();
+    }
+    Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
+    double xr = (_width - 1) / 2;
+    double yr = (_height - 1) / 2;
+    double nxr = (newWidth - 1) / 2;
+    double nyr = (newHeight - 1) / 2;
+
+    //rorate
+    for (int x = 0; x < newWidth; x++) {
+      for (int y = 0; y < newHeight; y++) {
+        double r = sqrt(pow(x - nxr, 2) + pow(y + nyr, 2));
+        double curRadian = atan((y + nyr) / (x - nxr));
+        double newRadian = curRadian + radian;
+        Point<int> orig = Point((cos(newRadian) * r + xr).toInt(),
+            (sin(newRadian) * r - yr).toInt());
+        Color newColor = bgColor;
+        if (orig.x >= 0 && orig.x < _width && orig.y >= 0 && orig.y < _height) {
+          newColor = getColor(orig.x, orig.y);
+        }
+        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel] =
+            newColor.red;
+        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 1] =
+            newColor.green;
+        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 2] =
+            newColor.blue;
+        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 3] =
+            newColor.alpha;
+      }
+    }
+
+    _width = newWidth;
+    _height = newHeight;
+    _buffer = newBuffer;
+  }
+
+  /// 裁剪
+  clip(int newWidth, int newHeight, [int offsetX = 0, int offsetY = 0]) {
+    Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
+
+    // 实际clip边界
+    int clipWidth = min(newWidth, _width - offsetX);
+    int clipHeight = min(newHeight, _height - offsetY);
+
+    for (int y = offsetY; y < offsetY + clipHeight; y++) {
+      List.copyRange(
+        newBuffer,
+        (y - offsetY) * newWidth * bytePerPixel,
+        _buffer,
+        ((y * _width) + offsetX) * bytePerPixel,
+        ((y * _width) + offsetX + clipWidth + 1) * bytePerPixel - 1,
+      );
+    }
+    _width = newWidth;
+    _height = newHeight;
+    _buffer = newBuffer;
+  }
+
+  /// 颜色mask
+  mask(Color color, [BlendMode mode = BlendMode.color]) {
+    BlendModeAction blend = BlendModeAction(mode);
+    for (int x = 0; x < _width; x++) {
+      for (int y = 0; y < _height; y++) {
+        Color oColor = getColor(x, y);
+        setColor(x, y, blend.blend(color, oColor));
+      }
+    }
+  }
+
+  /// 图像mask
+  maskImage(BufferImage image,
+      [BlendMode mode = BlendMode.color,
+      Point<int>? offset,
+      int repeat = RepeatMode.repeatAll]) {
+    BlendModeAction blend = BlendModeAction(mode);
+    RepeatMode repeatMode = RepeatMode(repeat);
+    ImageSize size = ImageSize(image.width, image.height);
+    for (int x = 0; x < _width; x++) {
+      for (int y = 0; y < _height; y++) {
+        PixelPoint? oPoint = repeatMode.repeat(
+            PixelPoint(x + (offset?.x ?? 0), y + (offset?.y ?? 0)), size);
+        if (oPoint != null) {
+          Color oColor = getColor(x, y);
+          setColor(
+              x, y, blend.blend(image.getColor(oPoint.x, oPoint.y), oColor));
+        }
+      }
+    }
+  }
+
   Uint8List get buffer {
     return _buffer;
   }
 
+  /// 复制图像
   BufferImage copy() {
     return BufferImage._(Uint8List.fromList(_buffer), _width, _height);
   }
