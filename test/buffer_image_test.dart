@@ -31,4 +31,11 @@ void main() {
 
     print("size after clip: ${image.width} x ${image.height}");
   });
+
+  test('core', () {
+    double radian;
+    radian = Math.atan(double.maxFinite);
+    print(radian);
+    print(Math.cos(radian));
+  });
 }

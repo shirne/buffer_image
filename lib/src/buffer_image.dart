@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
@@ -94,7 +95,8 @@ class BufferImage {
 
   /// 旋转
   rotate(double radian,
-      [Color bgColor = const Color.fromRGBO(255, 255, 255, 0),
+      [antialias = true,
+      Color bgColor = const Color.fromARGB(0, 255, 255, 255),
       clipCanvas = false]) {
     int newWidth = _width;
     int newHeight = _height;
@@ -108,16 +110,35 @@ class BufferImage {
     double nxr = (newWidth - 1) / 2;
     double nyr = (newHeight - 1) / 2;
 
+    //List<String> logs = [];
     //rorate
     for (int x = 0; x < newWidth; x++) {
       for (int y = 0; y < newHeight; y++) {
-        double r = sqrt(pow(x - nxr, 2) + pow(y + nyr, 2));
-        double curRadian = atan((y + nyr) / (x - nxr));
-        double newRadian = curRadian + radian;
-        Point<int> orig = Point((cos(newRadian) * r + xr).toInt(),
-            (sin(newRadian) * r - yr).toInt());
+        int xPos = xr.round();
+        int yPos = yr.round();
+
+        // 非中心点才可以计算
+        if (x != nxr || y != nyr) {
+          double r = sqrt(pow(x - nxr, 2) + pow(newHeight - y - nyr, 2));
+
+          double curRadian = (pi / 2);
+          if (x != nxr) {
+            curRadian = atan((newHeight - y - nyr) / (x - nxr));
+            if (x < nxr) {
+              curRadian += pi;
+            }
+          } else if (y > nyr) {
+            curRadian += pi;
+          }
+          double newRadian = curRadian - radian;
+
+          xPos = (cos(newRadian) * r + xr).round();
+          yPos = (_height - sin(newRadian) * r - yr).round();
+        }
+        Point<int> orig = Point(xPos, yPos);
         Color newColor = bgColor;
         if (orig.x >= 0 && orig.x < _width && orig.y >= 0 && orig.y < _height) {
+          //logs.add("$x, $y => ${orig.x}, ${orig.y}");
           newColor = getColor(orig.x, orig.y);
         }
         newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel] =
