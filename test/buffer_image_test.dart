@@ -1,3 +1,5 @@
+import 'dart:math' as Math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -21,5 +23,12 @@ void main() {
 
     image.setColor(0, 0, Colors.black);
     expect(image.getColor(0, 0), Colors.black);
+
+    image.rotate(Math.pi / 8);
+    print("size after rotate: ${image.width} x ${image.height}");
+
+    image.clip(100, 100, 15, 15);
+
+    print("size after clip: ${image.width} x ${image.height}");
   });
 }

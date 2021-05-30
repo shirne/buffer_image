@@ -150,7 +150,7 @@ class BufferImage {
         (y - offsetY) * newWidth * bytePerPixel,
         _buffer,
         ((y * _width) + offsetX) * bytePerPixel,
-        ((y * _width) + offsetX + clipWidth + 1) * bytePerPixel - 1,
+        ((y * _width) + offsetX + clipWidth) * bytePerPixel,
       );
     }
     _width = newWidth;
