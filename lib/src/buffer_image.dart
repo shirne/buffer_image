@@ -32,6 +32,10 @@ class BufferImage {
         image.height);
   }
 
+  static Future<BufferImage?> fromFile(File file) async {
+    return fromImage(await decodeImageFromList(file.readAsBytesSync()));
+  }
+
   int get width {
     return _width;
   }
