@@ -1,21 +1,32 @@
+library buffer_image;
+
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:buffer_image/src/buffer_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
+import 'buffer_image.dart';
+
+/// ImageProvider of BufferImage to display in ImageWidget
 class RgbaImage extends ImageProvider<RgbaImage> {
   final Uint8List bytes;
   final int width;
   final int height;
   final double scale;
 
+  /// initial from a [BufferImage]
+  /// @image the [BufferImage] to display
   RgbaImage.fromBufferImage(BufferImage image, {this.scale = 1.0})
       : this.bytes = image.buffer,
         this.width = image.width,
         this.height = image.height;
 
+  /// initial from rgba bytes
+  /// @bytes bytes of a BufferImage arrange by rgba
+  /// @width image width
+  /// @height image height
+  /// @scale display scale
   const RgbaImage(this.bytes,
       {required this.width, required this.height, this.scale = 1.0});
 

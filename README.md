@@ -1,4 +1,5 @@
 # buffer_image
+[![pub package](https://img.shields.io/pub/v/buffer_image.svg)](https://pub.dartlang.org/packages/buffer_image)
 
 用于编辑及显示原始像素格式(rgba)图片的库.
 

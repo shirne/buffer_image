@@ -1,13 +1,16 @@
+library buffer_image;
+
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:buffer_image/buffer_image.dart';
-import 'package:buffer_image/src/blend_mode.dart';
-import 'package:buffer_image/src/private.dart';
-import 'package:buffer_image/src/sample_mode.dart';
 import 'package:flutter/painting.dart';
+
+import 'blend_mode.dart';
+import 'private.dart';
+import 'repeat_mode.dart';
+import 'sample_mode.dart';
 
 class BufferImage {
   static const bytePerPixel = 4;

@@ -1,4 +1,6 @@
-import 'package:buffer_image/src/private.dart';
+library repeat_mode;
+
+import 'private.dart';
 
 class RepeatMode {
   static const none = 0;

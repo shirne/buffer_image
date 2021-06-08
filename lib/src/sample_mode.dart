@@ -1,8 +1,12 @@
+library sample_mode;
+
 import 'dart:math';
 
-import 'package:buffer_image/src/buffer_image.dart';
 import 'package:flutter/painting.dart';
 
+import 'buffer_image.dart';
+
+/// abstract class of sample mode
 abstract class SampleMode {
   static const nearest = const NearestSampleMode();
   static const bilinear = const BilinearSampleMode();
@@ -18,10 +22,11 @@ abstract class SampleMode {
   }
 }
 
-/// 最近邻法
+/// Nearest sample mode
 class NearestSampleMode extends SampleMode {
   const NearestSampleMode() : super('nearest');
 
+  /// sample
   @override
   Color sample(Point<double> point, BufferImage image) {
     int x = point.x.round();
@@ -34,7 +39,7 @@ class NearestSampleMode extends SampleMode {
   }
 }
 
-/// 双线性内插法
+/// Bilinear sample mode
 class BilinearSampleMode extends SampleMode {
   const BilinearSampleMode() : super('bilinear');
 
@@ -73,7 +78,7 @@ class BilinearSampleMode extends SampleMode {
   }
 }
 
-/// 立方卷积法
+/// Bicubic sample mode [Unimplemented]
 class BicubicSampleMode extends SampleMode {
   const BicubicSampleMode() : super('bicubic');
 
@@ -84,7 +89,7 @@ class BicubicSampleMode extends SampleMode {
   }
 }
 
-/// Lanczos
+/// Lanczos sample mode [Unimplemented]
 class LanczosSampleMode extends SampleMode {
   const LanczosSampleMode() : super('lanczos');
 

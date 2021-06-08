@@ -1,73 +1,77 @@
+
+library blend_mode;
+
 import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/painting.dart';
 
+/// a blend mode factory of [BlendMode] in [painting]
 abstract class BlendModeAction {
-  BlendMode mode;
+  final BlendMode mode;
 
-  BlendModeAction._(this.mode);
+  const BlendModeAction._(this.mode);
 
   factory BlendModeAction(BlendMode mode) {
     switch (mode) {
       case BlendMode.clear:
-        return _BlendModeClear();
+        return const _BlendModeClear();
       case BlendMode.color:
-        return _BlendModeColor();
+        return const _BlendModeColor();
       case BlendMode.colorBurn:
-        return _BlendModeColorBurn();
+        return const _BlendModeColorBurn();
       case BlendMode.colorDodge:
-        return _BlendModeColorDodge();
+        return const _BlendModeColorDodge();
       case BlendMode.darken:
-        return _BlendModeDarken();
+        return const _BlendModeDarken();
       case BlendMode.difference:
-        return _BlendModeDifference();
+        return const _BlendModeDifference();
       case BlendMode.dst:
-        return _BlendModeDst();
+        return const _BlendModeDst();
       case BlendMode.dstATop:
-        return _BlendModeDstATop();
+        return const _BlendModeDstATop();
       case BlendMode.dstIn:
-        return _BlendModeDstIn();
+        return const _BlendModeDstIn();
       case BlendMode.dstOut:
-        return _BlendModeDstOut();
+        return const _BlendModeDstOut();
       case BlendMode.dstOver:
-        return _BlendModeDstOver();
+        return const _BlendModeDstOver();
       case BlendMode.exclusion:
-        return _BlendModeExclusion();
+        return const _BlendModeExclusion();
       case BlendMode.hardLight:
-        return _BlendModeHardLight();
+        return const _BlendModeHardLight();
       case BlendMode.hue:
-        return _BlendModeHue();
+        return const _BlendModeHue();
       case BlendMode.lighten:
-        return _BlendModeLighten();
+        return const _BlendModeLighten();
       case BlendMode.luminosity:
-        return _BlendModeLuminosity();
+        return const _BlendModeLuminosity();
       case BlendMode.modulate:
-        return _BlendModeModulate();
+        return const _BlendModeModulate();
       case BlendMode.multiply:
-        return _BlendModeMultiply();
+        return const _BlendModeMultiply();
       case BlendMode.overlay:
-        return _BlendModeOverlay();
+        return const _BlendModeOverlay();
       case BlendMode.plus:
-        return _BlendModePlus();
+        return const _BlendModePlus();
       case BlendMode.saturation:
-        return _BlendModeSaturation();
+        return const _BlendModeSaturation();
       case BlendMode.screen:
-        return _BlendModeScreen();
+        return const _BlendModeScreen();
       case BlendMode.softLight:
-        return _BlendModeSoftLight();
+        return const _BlendModeSoftLight();
       case BlendMode.src:
-        return _BlendModeSrc();
+        return const _BlendModeSrc();
       case BlendMode.srcATop:
-        return _BlendModeSrcATop();
+        return const _BlendModeSrcATop();
       case BlendMode.srcIn:
-        return _BlendModeSrcIn();
+        return const _BlendModeSrcIn();
       case BlendMode.srcOut:
-        return _BlendModeSrcOut();
+        return const _BlendModeSrcOut();
       case BlendMode.srcOver:
-        return _BlendModeSrcOver();
+        return const _BlendModeSrcOver();
       case BlendMode.xor:
-        return _BlendModeXor();
+        return const _BlendModeXor();
 
       default:
         throw UnimplementedError('Unimplemented BlendMode $mode');
@@ -77,7 +81,7 @@ abstract class BlendModeAction {
 }
 
 class _BlendModeMultiply extends BlendModeAction {
-  _BlendModeMultiply() : super._(BlendMode.multiply);
+  const _BlendModeMultiply() : super._(BlendMode.multiply);
 
   @override
   blend(Color src, Color dst) {
@@ -89,7 +93,7 @@ class _BlendModeMultiply extends BlendModeAction {
 }
 
 class _BlendModeXor extends BlendModeAction {
-  _BlendModeXor() : super._(BlendMode.xor);
+  const _BlendModeXor() : super._(BlendMode.xor);
 
   @override
   blend(Color src, Color dst) {
@@ -98,7 +102,7 @@ class _BlendModeXor extends BlendModeAction {
 }
 
 class _BlendModeSrcOver extends BlendModeAction {
-  _BlendModeSrcOver() : super._(BlendMode.srcOver);
+  const _BlendModeSrcOver() : super._(BlendMode.srcOver);
 
   @override
   blend(Color src, Color dst) {
@@ -107,7 +111,7 @@ class _BlendModeSrcOver extends BlendModeAction {
 }
 
 class _BlendModeSrcOut extends BlendModeAction {
-  _BlendModeSrcOut() : super._(BlendMode.srcOut);
+  const _BlendModeSrcOut() : super._(BlendMode.srcOut);
 
   @override
   blend(Color src, Color dst) {
@@ -120,7 +124,7 @@ class _BlendModeSrcOut extends BlendModeAction {
 }
 
 class _BlendModeSrcIn extends BlendModeAction {
-  _BlendModeSrcIn() : super._(BlendMode.srcIn);
+  const _BlendModeSrcIn() : super._(BlendMode.srcIn);
 
   @override
   blend(Color src, Color dst) {
@@ -132,7 +136,7 @@ class _BlendModeSrcIn extends BlendModeAction {
 }
 
 class _BlendModeSrcATop extends BlendModeAction {
-  _BlendModeSrcATop() : super._(BlendMode.srcATop);
+  const _BlendModeSrcATop() : super._(BlendMode.srcATop);
 
   @override
   blend(Color src, Color dst) {
@@ -147,7 +151,7 @@ class _BlendModeSrcATop extends BlendModeAction {
 }
 
 class _BlendModeSoftLight extends BlendModeAction {
-  _BlendModeSoftLight() : super._(BlendMode.softLight);
+  const _BlendModeSoftLight() : super._(BlendMode.softLight);
 
   @override
   blend(Color src, Color dst) {
@@ -169,7 +173,7 @@ class _BlendModeSoftLight extends BlendModeAction {
 }
 
 class _BlendModeSrc extends BlendModeAction {
-  _BlendModeSrc() : super._(BlendMode.src);
+  const _BlendModeSrc() : super._(BlendMode.src);
 
   @override
   blend(Color src, Color dst) {
@@ -178,7 +182,7 @@ class _BlendModeSrc extends BlendModeAction {
 }
 
 class _BlendModeScreen extends BlendModeAction {
-  _BlendModeScreen() : super._(BlendMode.screen);
+  const _BlendModeScreen() : super._(BlendMode.screen);
 
   @override
   blend(Color src, Color dst) {
@@ -196,7 +200,7 @@ class _BlendModeScreen extends BlendModeAction {
 }
 
 class _BlendModeSaturation extends BlendModeAction {
-  _BlendModeSaturation() : super._(BlendMode.saturation);
+  const _BlendModeSaturation() : super._(BlendMode.saturation);
 
   @override
   blend(Color src, Color dst) {
@@ -211,7 +215,7 @@ class _BlendModeSaturation extends BlendModeAction {
 }
 
 class _BlendModePlus extends BlendModeAction {
-  _BlendModePlus() : super._(BlendMode.plus);
+  const _BlendModePlus() : super._(BlendMode.plus);
 
   @override
   blend(Color src, Color dst) {
@@ -242,7 +246,7 @@ class _BlendModePlus extends BlendModeAction {
 }
 
 class _BlendModeOverlay extends BlendModeAction {
-  _BlendModeOverlay() : super._(BlendMode.overlay);
+  const _BlendModeOverlay() : super._(BlendMode.overlay);
 
   @override
   blend(Color src, Color dst) {
@@ -265,7 +269,7 @@ class _BlendModeOverlay extends BlendModeAction {
 }
 
 class _BlendModeModulate extends BlendModeAction {
-  _BlendModeModulate() : super._(BlendMode.modulate);
+  const _BlendModeModulate() : super._(BlendMode.modulate);
 
   @override
   blend(Color src, Color dst) {
@@ -283,7 +287,7 @@ class _BlendModeModulate extends BlendModeAction {
 }
 
 class _BlendModeLuminosity extends BlendModeAction {
-  _BlendModeLuminosity() : super._(BlendMode.luminosity);
+  const _BlendModeLuminosity() : super._(BlendMode.luminosity);
 
   @override
   blend(Color src, Color dst) {
@@ -298,7 +302,7 @@ class _BlendModeLuminosity extends BlendModeAction {
 }
 
 class _BlendModeLighten extends BlendModeAction {
-  _BlendModeLighten() : super._(BlendMode.lighten);
+  const _BlendModeLighten() : super._(BlendMode.lighten);
 
   @override
   blend(Color src, Color dst) {
@@ -312,7 +316,7 @@ class _BlendModeLighten extends BlendModeAction {
 }
 
 class _BlendModeHue extends BlendModeAction {
-  _BlendModeHue() : super._(BlendMode.hue);
+  const _BlendModeHue() : super._(BlendMode.hue);
 
   @override
   blend(Color src, Color dst) {
@@ -327,7 +331,7 @@ class _BlendModeHue extends BlendModeAction {
 }
 
 class _BlendModeHardLight extends BlendModeAction {
-  _BlendModeHardLight() : super._(BlendMode.hardLight);
+  const _BlendModeHardLight() : super._(BlendMode.hardLight);
 
   @override
   blend(Color src, Color dst) {
@@ -350,7 +354,7 @@ class _BlendModeHardLight extends BlendModeAction {
 }
 
 class _BlendModeExclusion extends BlendModeAction {
-  _BlendModeExclusion() : super._(BlendMode.exclusion);
+  const _BlendModeExclusion() : super._(BlendMode.exclusion);
 
   @override
   blend(Color src, Color dst) {
@@ -368,7 +372,7 @@ class _BlendModeExclusion extends BlendModeAction {
 }
 
 class _BlendModeDstOver extends BlendModeAction {
-  _BlendModeDstOver() : super._(BlendMode.dstOver);
+  const _BlendModeDstOver() : super._(BlendMode.dstOver);
 
   @override
   blend(Color src, Color dst) {
@@ -377,7 +381,7 @@ class _BlendModeDstOver extends BlendModeAction {
 }
 
 class _BlendModeDstOut extends BlendModeAction {
-  _BlendModeDstOut() : super._(BlendMode.dstOut);
+  const _BlendModeDstOut() : super._(BlendMode.dstOut);
 
   @override
   blend(Color src, Color dst) {
@@ -390,7 +394,7 @@ class _BlendModeDstOut extends BlendModeAction {
 }
 
 class _BlendModeDstIn extends BlendModeAction {
-  _BlendModeDstIn() : super._(BlendMode.dstIn);
+  const _BlendModeDstIn() : super._(BlendMode.dstIn);
 
   @override
   blend(Color src, Color dst) {
@@ -399,7 +403,7 @@ class _BlendModeDstIn extends BlendModeAction {
 }
 
 class _BlendModeDstATop extends BlendModeAction {
-  _BlendModeDstATop() : super._(BlendMode.dstATop);
+  const _BlendModeDstATop() : super._(BlendMode.dstATop);
 
   @override
   blend(Color src, Color dst) {
@@ -410,7 +414,7 @@ class _BlendModeDstATop extends BlendModeAction {
 }
 
 class _BlendModeDst extends BlendModeAction {
-  _BlendModeDst() : super._(BlendMode.dst);
+  const _BlendModeDst() : super._(BlendMode.dst);
 
   @override
   blend(Color src, Color dst) {
@@ -419,7 +423,7 @@ class _BlendModeDst extends BlendModeAction {
 }
 
 class _BlendModeDifference extends BlendModeAction {
-  _BlendModeDifference() : super._(BlendMode.difference);
+  const _BlendModeDifference() : super._(BlendMode.difference);
 
   @override
   blend(Color src, Color dst) {
@@ -433,7 +437,7 @@ class _BlendModeDifference extends BlendModeAction {
 }
 
 class _BlendModeDarken extends BlendModeAction {
-  _BlendModeDarken() : super._(BlendMode.darken);
+  const _BlendModeDarken() : super._(BlendMode.darken);
 
   @override
   blend(Color src, Color dst) {
@@ -447,7 +451,7 @@ class _BlendModeDarken extends BlendModeAction {
 }
 
 class _BlendModeColorDodge extends BlendModeAction {
-  _BlendModeColorDodge() : super._(BlendMode.colorDodge);
+  const _BlendModeColorDodge() : super._(BlendMode.colorDodge);
 
   @override
   blend(Color src, Color dst) {
@@ -465,7 +469,7 @@ class _BlendModeColorDodge extends BlendModeAction {
 }
 
 class _BlendModeClear extends BlendModeAction {
-  _BlendModeClear() : super._(BlendMode.clear);
+  const _BlendModeClear() : super._(BlendMode.clear);
 
   @override
   blend(Color src, Color dst) {
@@ -474,7 +478,7 @@ class _BlendModeClear extends BlendModeAction {
 }
 
 class _BlendModeColor extends BlendModeAction {
-  _BlendModeColor() : super._(BlendMode.color);
+  const _BlendModeColor() : super._(BlendMode.color);
 
   @override
   blend(Color src, Color dst) {
@@ -489,7 +493,7 @@ class _BlendModeColor extends BlendModeAction {
 }
 
 class _BlendModeColorBurn extends BlendModeAction {
-  _BlendModeColorBurn() : super._(BlendMode.colorBurn);
+  const _BlendModeColorBurn() : super._(BlendMode.colorBurn);
 
   @override
   blend(Color src, Color dst) {
