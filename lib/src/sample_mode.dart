@@ -78,7 +78,7 @@ class BilinearSampleMode extends SampleMode {
   }
 }
 
-/// Bicubic sample mode [Unimplemented]
+/// Bicubic sample mode @Unimplemented
 class BicubicSampleMode extends SampleMode {
   const BicubicSampleMode() : super('bicubic');
 
@@ -89,7 +89,7 @@ class BicubicSampleMode extends SampleMode {
   }
 }
 
-/// Lanczos sample mode [Unimplemented]
+/// Lanczos sample mode@Unimplemented
 class LanczosSampleMode extends SampleMode {
   const LanczosSampleMode() : super('lanczos');
 

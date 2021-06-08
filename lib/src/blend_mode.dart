@@ -6,7 +6,7 @@ import 'dart:ui';
 
 import 'package:flutter/painting.dart';
 
-/// a blend mode factory of [BlendMode] in [painting]
+/// a blend mode factory of [BlendMode]
 abstract class BlendModeAction {
   final BlendMode mode;
 

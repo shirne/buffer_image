@@ -2,6 +2,7 @@ library repeat_mode;
 
 import 'private.dart';
 
+/// repeat mode of an image
 class RepeatMode {
   static const none = 0;
   static const repeatX = 1;

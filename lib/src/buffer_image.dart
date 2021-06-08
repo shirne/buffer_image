@@ -12,6 +12,7 @@ import 'private.dart';
 import 'repeat_mode.dart';
 import 'sample_mode.dart';
 
+/// An image object
 class BufferImage {
   static const bytePerPixel = 4;
   Uint8List _buffer;
@@ -19,6 +20,7 @@ class BufferImage {
   int _width;
   int _height;
 
+  /// create BufferImage with specified `with` and `height`
   BufferImage(width, height)
       : _width = width,
         _height = height,
@@ -26,6 +28,7 @@ class BufferImage {
 
   BufferImage._(this._buffer, this._width, this._height);
 
+  /// load data from an [Image]
   static Future<BufferImage> fromImage(Image image) async {
     return BufferImage._(
         (await image.toByteData(format: ImageByteFormat.rawRgba))!
@@ -35,6 +38,7 @@ class BufferImage {
         image.height);
   }
 
+  /// load image from a `file` use system codec([decodeImageFromList])
   static Future<BufferImage?> fromFile(File file) async {
     return fromImage(await decodeImageFromList(file.readAsBytesSync()));
   }
@@ -47,6 +51,7 @@ class BufferImage {
     return _height;
   }
 
+  /// set the [Color] at Offset(`x`, `y`)
   setColor(int x, int y, Color color) {
     _buffer[y * _width * bytePerPixel + x * bytePerPixel] = color.red;
     _buffer[y * _width * bytePerPixel + x * bytePerPixel + 1] = color.green;
@@ -54,6 +59,7 @@ class BufferImage {
     _buffer[y * _width * bytePerPixel + x * bytePerPixel + 3] = color.alpha;
   }
 
+  /// get the [Color] at Offset(`x`, `y`)
   Color getColor(int x, int y) {
     return Color.fromARGB(
       _buffer[y * _width * bytePerPixel + x * bytePerPixel + 3],
@@ -63,14 +69,14 @@ class BufferImage {
     );
   }
 
-  /// 按比例缩放
+  /// scale by `ratio` width `sample`
   resize(double ratio, [SampleMode sample = SampleMode.nearest]) {
     int newWidth = (_width * ratio).round();
     int newHeight = (_height * ratio).round();
     resizeTo(newWidth, newHeight, sample);
   }
 
-  /// 缩放
+  /// scale to specified size (`newWidth` and `newHeight`) with `sample`
   resizeTo(int newWidth, int newHeight,
       [SampleMode sample = SampleMode.nearest]) {
     Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
@@ -100,14 +106,18 @@ class BufferImage {
     _buffer = newBuffer;
   }
 
-  /// 旋转
+  /// Rotate image by the specified `radian`,
+  /// The blank area is filled with the specified `bgColor`
+  /// If `isClip`, hold the old width & height (clip the image data out of canvas)
+  /// Else adjust the canvas to fit the rotated image
+  /// `isAntialias` not implemented
   rotate(double radian,
-      [antialias = true,
+      [bool isAntialias = true,
       Color bgColor = const Color.fromARGB(0, 255, 255, 255),
-      clipCanvas = false]) {
+      bool isClip = false]) {
     int newWidth = _width;
     int newHeight = _height;
-    if (!clipCanvas) {
+    if (!isClip) {
       newWidth = (sin(radian) * _width + cos(radian) * _height).ceil();
       newHeight = (cos(radian) * _width + sin(radian) * _height).ceil();
     }
@@ -118,7 +128,7 @@ class BufferImage {
     double nyr = (newHeight - 1) / 2;
 
     //List<String> logs = [];
-    //rorate
+    //rotate
     for (int x = 0; x < newWidth; x++) {
       for (int y = 0; y < newHeight; y++) {
         int xPos = xr.round();
@@ -164,7 +174,7 @@ class BufferImage {
     _buffer = newBuffer;
   }
 
-  /// 裁剪
+  /// Clip the image to `newWidth` & `newHeight` from Offset(`offsetX`, `offsetY`)
   clip(int newWidth, int newHeight, [int offsetX = 0, int offsetY = 0]) {
     Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
 
@@ -186,7 +196,7 @@ class BufferImage {
     _buffer = newBuffer;
   }
 
-  /// 颜色mask
+  /// Mask the image with `color` use `mode`(see [BlendMode])
   mask(Color color, [BlendMode mode = BlendMode.color]) {
     BlendModeAction blend = BlendModeAction(mode);
     for (int x = 0; x < _width; x++) {
@@ -197,7 +207,7 @@ class BufferImage {
     }
   }
 
-  /// 图像mask
+  /// Mask the image with another `image` use `mode`(see [BlendMode])
   maskImage(BufferImage image,
       [BlendMode mode = BlendMode.color,
       Point<int>? offset,
@@ -218,11 +228,12 @@ class BufferImage {
     }
   }
 
+  /// the color data of this image
   Uint8List get buffer {
     return _buffer;
   }
 
-  /// 复制图像
+  /// A copy of this BufferImage
   BufferImage copy() {
     return BufferImage._(Uint8List.fromList(_buffer), _width, _height);
   }

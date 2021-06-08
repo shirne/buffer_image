@@ -15,18 +15,13 @@ class RgbaImage extends ImageProvider<RgbaImage> {
   final int height;
   final double scale;
 
-  /// initial from a [BufferImage]
-  /// @image the [BufferImage] to display
+  /// initial from a `image`
   RgbaImage.fromBufferImage(BufferImage image, {this.scale = 1.0})
       : this.bytes = image.buffer,
         this.width = image.width,
         this.height = image.height;
 
-  /// initial from rgba bytes
-  /// @bytes bytes of a BufferImage arrange by rgba
-  /// @width image width
-  /// @height image height
-  /// @scale display scale
+  /// initial from rgba `bytes` and the specified `width` & `height`
   const RgbaImage(this.bytes,
       {required this.width, required this.height, this.scale = 1.0});
 
