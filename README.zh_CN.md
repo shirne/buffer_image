@@ -1,14 +1,14 @@
-# BufferImage
+# buffer_image
 [![pub package](https://img.shields.io/pub/v/buffer_image.svg)](https://pub.dartlang.org/packages/buffer_image)
 
-A library for modify and display rgba format image data.
+用于编辑及显示原始像素格式(rgba)图片的库.
 
 
-## preview
+## 效果预览
 
-demo code:
+完整代码参考example
 ```
-// create ImageProvider
+// 生成ImageProvider
 BufferImage bufferImage = BufferImage(100, 100);
 for (int i = 0; i < 100; i++) {
     for (int j = 0; j < 100; j++) {
@@ -21,7 +21,7 @@ bufferImage.resize(2);
 scaleImage = RgbaImage.fromBufferImage(bufferImage, scale: 1);
 
 
-// display Image
+// 显示Image
 Center(
     child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -36,15 +36,15 @@ Center(
     ),
 )
 ```
-![Preview](preview/01.png)
+![预览图](preview/01.png)
 
-## Features
-- [x] BufferImage for edit the pixel image
-- [x] ImageProvider for display in Image Widget
-- [x] Scale the image (Nearest sample mode and Bilinear sample mode is available)
-- [x] Color/Image mask with a blend mode
-- [x] Rotate
-- [ ] any more...
+## 功能
+- [x] 处理原始图像格式的类(像素设置，图片缩放)
+- [x] 处理图片显示的provider
+- [x] 图片缩放的插值算法 (实现了邻近算法和二次插值)
+- [x] 颜色，帖图混合模式
+- [x] 旋转图像(还需要增加抗锯齿算法)
+- [ ] 更多图像编辑方法
 
 ## Flutter
 
