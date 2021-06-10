@@ -11,11 +11,12 @@ abstract class SampleMode {
   static const nearest = const NearestSampleMode();
   static const bilinear = const BilinearSampleMode();
   static const bicubic = const BicubicSampleMode();
+  static const lanczos = const LanczosSampleMode();
 
   final String mode;
   const SampleMode(this.mode);
 
-  Color sample(Point<double> point, BufferImage image);
+  Color sample(Point<double> point, BufferImage image, [Color? obColor]);
 
   Color lerpColor(Color a, Color b, double t) {
     return Color.lerp(a, b, t)!;
@@ -28,14 +29,8 @@ class NearestSampleMode extends SampleMode {
 
   /// sample
   @override
-  Color sample(Point<double> point, BufferImage image) {
-    int x = point.x.round();
-    if (x < 0) x = 0;
-    if (x >= image.width) x = image.width - 1;
-    int y = point.y.round();
-    if (y < 0) y = 0;
-    if (y >= image.height) y = image.height - 1;
-    return image.getColor(x, y);
+  Color sample(Point<double> point, BufferImage image, [Color? obColor]) {
+    return image.getColorSafe(point.x.round(), point.y.round(), obColor);
   }
 }
 
@@ -44,30 +39,30 @@ class BilinearSampleMode extends SampleMode {
   const BilinearSampleMode() : super('bilinear');
 
   @override
-  Color sample(Point<double> point, BufferImage image) {
+  Color sample(Point<double> point, BufferImage image, [Color? obColor]) {
     double x = point.x.floorToDouble();
     double y = point.y.floorToDouble();
 
     if (x == point.x) {
       if (y == point.y) {
-        return image.getColor(x.toInt(), y.toInt());
+        return image.getColorSafe(x.toInt(), y.toInt(), obColor);
       } else {
-        return lerpColor(image.getColor(x.toInt(), point.y.floor()),
-            image.getColor(x.toInt(), point.y.ceil()), point.y - y);
+        return lerpColor(image.getColorSafe(x.toInt(), point.y.floor(), obColor),
+            image.getColorSafe(x.toInt(), point.y.ceil(), obColor), point.y - y);
       }
     } else {
       if (y == point.y) {
-        return lerpColor(image.getColor(point.x.floor(), y.toInt()),
-            image.getColor(point.x.ceil(), y.toInt()), point.x - x);
+        return lerpColor(image.getColorSafe(point.x.floor(), y.toInt(), obColor),
+            image.getColorSafe(point.x.ceil(), y.toInt(), obColor), point.x - x);
       }
     }
 
     // tl, tr, br, bl
     List<Color> colors = [
-      image.getColor(point.x.floor(), point.y.floor()),
-      image.getColor(point.x.ceil(), point.y.floor()),
-      image.getColor(point.x.ceil(), point.y.ceil()),
-      image.getColor(point.x.floor(), point.y.ceil())
+      image.getColorSafe(point.x.floor(), point.y.floor(), obColor),
+      image.getColorSafe(point.x.ceil(), point.y.floor(), obColor),
+      image.getColorSafe(point.x.ceil(), point.y.ceil(), obColor),
+      image.getColorSafe(point.x.floor(), point.y.ceil(), obColor)
     ];
     double tHor = point.x - x, tVer = point.y - y;
 
@@ -83,7 +78,7 @@ class BicubicSampleMode extends SampleMode {
   const BicubicSampleMode() : super('bicubic');
 
   @override
-  Color sample(Point<double> point, BufferImage image) {
+  Color sample(Point<double> point, BufferImage image, [Color? obColor]) {
     // TODO: implement sample
     throw UnimplementedError();
   }
@@ -94,7 +89,7 @@ class LanczosSampleMode extends SampleMode {
   const LanczosSampleMode() : super('lanczos');
 
   @override
-  Color sample(Point<double> point, BufferImage image) {
+  Color sample(Point<double> point, BufferImage image, [Color? obColor]) {
     // TODO: implement sample
     throw UnimplementedError();
   }
