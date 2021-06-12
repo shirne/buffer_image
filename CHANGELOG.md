@@ -1,3 +1,8 @@
+## 0.2.1
+
+* fix clipPath, drawPath
+* fix default draw mode
+
 ## 0.2.0
 
 * add clipPath drawPath getImage
