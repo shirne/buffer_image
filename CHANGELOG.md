@@ -1,3 +1,8 @@
+## 0.2.0
+
+* add clipPath drawPath getImage
+* update example
+
 ## 0.1.0
 
 * add drawRect, drawImage

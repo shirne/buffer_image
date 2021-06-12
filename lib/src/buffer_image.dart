@@ -11,15 +11,16 @@ import 'private.dart';
 import 'repeat_mode.dart';
 import 'sample_mode.dart';
 
-/// An image object
+/// An image object, pixel data stored in a [Uint8List]
 class BufferImage {
   static const bytePerPixel = 4;
   Uint8List _buffer;
 
+  bool _isLock = false;
   int _width;
   int _height;
 
-  /// create BufferImage with specified `with` and `height`
+  /// create BufferImage with specified [with] and [height]
   BufferImage(width, height)
       : _width = width,
         _height = height,
@@ -37,7 +38,7 @@ class BufferImage {
         image.height);
   }
 
-  /// load image from a image `fileData` use system codec([decodeImageFromList])
+  /// load image from a image [fileData] use system codec([decodeImageFromList])
   static Future<BufferImage?> fromFile(Uint8List fileData) async {
     return fromImage(await decodeImageFromList(fileData));
   }
@@ -48,6 +49,11 @@ class BufferImage {
 
   int get height {
     return _height;
+  }
+
+  _lockWrite(){
+    assert(!_isLock, 'Can\'t lock image to write!');
+    _isLock = true;
   }
 
   /// set the [Color] at Offset([x], [y])
@@ -96,14 +102,14 @@ class BufferImage {
     return defaultColor;
   }
 
-  /// scale by `ratio` width `sample`
+  /// scale by [ratio] width [sample]
   resize(double ratio, [SampleMode sample = SampleMode.nearest]) {
     int newWidth = (_width * ratio).round();
     int newHeight = (_height * ratio).round();
     resizeTo(newWidth, newHeight, sample);
   }
 
-  /// scale to specified size (`newWidth` and `newHeight`) with `sample`
+  /// scale to specified size ([newWidth] and [newHeight]) with [sample]
   resizeTo(int newWidth, int newHeight,
       [SampleMode sample = SampleMode.nearest]) {
     Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
@@ -146,8 +152,8 @@ class BufferImage {
     int newWidth = _width;
     int newHeight = _height;
     if (!isClip) {
-      newWidth = (sin(radian) * _width + cos(radian) * _height).ceil();
-      newHeight = (cos(radian) * _width + sin(radian) * _height).ceil();
+      newWidth = (sin(radian).abs() * _width + cos(radian).abs() * _height).ceil();
+      newHeight = (cos(radian).abs() * _width + sin(radian).abs() * _height).ceil();
     }
     Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
     double xr = (_width - 1) / 2;
@@ -182,8 +188,6 @@ class BufferImage {
         Point<double> orig = Point(xPos, yPos);
         Color newColor = bgColor;
         if (orig.x > -1 && orig.x < _width && orig.y > -1 && orig.y < _height) {
-          //logs.add("$x, $y => ${orig.x}, ${orig.y}");
-          //newColor = getColor(orig.x, orig.y);
           newColor = sample.sample(orig, this, bgColor);
         }
         newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel] =
@@ -224,7 +228,26 @@ class BufferImage {
     _buffer = newBuffer;
   }
 
-  /// Mask the image with `color` use `mode`(see [BlendMode])
+  /// Clip this image with [path], use a [Canvas] render
+  clipPath(Path path, {bool doAntiAlias = true}) async{
+    _lockWrite();
+    Rect boundary = path.getBounds();
+    PictureRecorder pr = PictureRecorder();
+    Canvas canvas = Canvas(pr);
+    Image image = await getImage();
+    canvas.drawImage(image, Offset.zero, Paint());
+
+    canvas.clipPath(path, doAntiAlias:doAntiAlias);
+    canvas.save();
+    Picture picture = pr.endRecording();
+    image = await picture.toImage(boundary.width.round(), boundary.height.round());
+    _buffer = (await image.toByteData(format: ImageByteFormat.rawRgba))!.buffer.asUint8List();
+    _width = image.width;
+    _height = image.height;
+    _isLock = false;
+  }
+
+  /// Mask the image with [color] use [mode](see [BlendMode])
   mask(Color color, [BlendMode mode = BlendMode.color]) {
     BlendModeAction blend = BlendModeAction(mode);
     for (int x = 0; x < _width; x++) {
@@ -235,7 +258,7 @@ class BufferImage {
     }
   }
 
-  /// Mask the image with another `image` use `mode`(see [BlendMode])
+  /// Mask the image with another [image] use [mode](see [BlendMode])
   maskImage(BufferImage image,
       [BlendMode mode = BlendMode.color,
       Point<int>? offset,
@@ -256,6 +279,7 @@ class BufferImage {
     }
   }
 
+  /// Draw a [rect] on this image with [color], use the [mode]
   drawRect(Rect rect, Color color, [BlendMode mode = BlendMode.src]){
     BlendModeAction blend = BlendModeAction(mode);
     int maxX = min(_width, rect.right.round());
@@ -269,6 +293,7 @@ class BufferImage {
     }
   }
 
+  /// Draw the [image] on this image at [offset], use the [mode]
   drawImage(BufferImage image, Offset offset, [BlendMode mode = BlendMode.src]){
     BlendModeAction blend = BlendModeAction(mode);
     int minX = max(0, offset.dx.round());
@@ -282,6 +307,43 @@ class BufferImage {
         setColor(x, y, blend.blend(image.getColor(x - minX, y - minY), oColor));
       }
     }
+  }
+
+  /// Draw the [path] on this image, use a [Canvas] render
+  drawPath(Path path, Color color, {BlendMode mode = BlendMode.src, PaintingStyle style = PaintingStyle.fill, double strokeWidth = 0}) async{
+    _lockWrite();
+    Rect boundary = path.getBounds();
+    PictureRecorder pr = PictureRecorder();
+    Canvas canvas = Canvas(pr);
+    Image image = await getImage();
+    canvas.drawImage(image, Offset.zero, Paint());
+
+    Paint paint = Paint()
+      ..color=color
+      ..blendMode = mode
+      ..style = style
+      ..strokeWidth = strokeWidth;
+    canvas.drawPath(path, paint);
+    canvas.save();
+    Picture picture = pr.endRecording();
+    image = await picture.toImage(boundary.width.round(), boundary.height.round());
+    _buffer = (await image.toByteData(format: ImageByteFormat.rawRgba))!.buffer.asUint8List();
+    _width = image.width;
+    _height = image.height;
+    _isLock = false;
+  }
+
+  /// Get the [Image] Object from this image
+  Future<Image> getImage() async{
+    var ib = await ImmutableBuffer.fromUint8List(_buffer);
+
+    ImageDescriptor id = ImageDescriptor.raw(ib,
+        width: width, height: height, pixelFormat: PixelFormat.rgba8888);
+
+    Codec cdc = await id.instantiateCodec();
+
+    FrameInfo fi = await cdc.getNextFrame();
+    return fi.image;
   }
 
   /// the color data of this image
