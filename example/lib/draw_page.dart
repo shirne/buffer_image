@@ -1,17 +1,16 @@
-
-
 import 'package:buffer_image/buffer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-class DrawPage extends StatefulWidget{
-  const DrawPage({Key? key}):super(key: key);
+class DrawPage extends StatefulWidget {
+  const DrawPage({Key? key}) : super(key: key);
 
   @override
   State<DrawPage> createState() => _BlendPageState();
 }
 
-class _BlendPageState extends State<DrawPage> with AutomaticKeepAliveClientMixin {
+class _BlendPageState extends State<DrawPage>
+    with AutomaticKeepAliveClientMixin {
   late BufferImage bufferImage;
 
   RgbaImage? image;
@@ -86,7 +85,8 @@ class _BlendPageState extends State<DrawPage> with AutomaticKeepAliveClientMixin
   }
 
   _pickerMode() {
-    FixedExtentScrollController _controller = FixedExtentScrollController(initialItem: BlendMode.values.indexOf(_mode));
+    FixedExtentScrollController _controller = FixedExtentScrollController(
+        initialItem: BlendMode.values.indexOf(_mode));
     showDialog(
         context: context,
         builder: (context) {
@@ -95,12 +95,14 @@ class _BlendPageState extends State<DrawPage> with AutomaticKeepAliveClientMixin
             content: Container(
               height: 300,
               child: ListWheelScrollView(
-                itemExtent:30,
+                itemExtent: 30,
                 useMagnifier: true,
                 magnification: 1.3,
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 controller: _controller,
-                children: BlendMode.values.map<Widget>((item)=>Text(item.toString())).toList(),
+                children: BlendMode.values
+                    .map<Widget>((item) => Text(item.toString()))
+                    .toList(),
               ),
             ),
             actions: <Widget>[
@@ -119,6 +121,7 @@ class _BlendPageState extends State<DrawPage> with AutomaticKeepAliveClientMixin
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Rotate Image'),
@@ -128,12 +131,16 @@ class _BlendPageState extends State<DrawPage> with AutomaticKeepAliveClientMixin
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Text('原始图像:'),
             Image(
               image: image!,
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -154,14 +161,17 @@ class _BlendPageState extends State<DrawPage> with AutomaticKeepAliveClientMixin
                 ),
                 GestureDetector(
                   onTap: _pickerMode,
-                  child: Text("混合模式:"+_mode.toString().replaceFirst('BlendMode.', '')),
+                  child: Text("混合模式:" +
+                      _mode.toString().replaceFirst('BlendMode.', '')),
                 ),
                 SizedBox(
                   width: 20,
                 ),
               ],
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Image(
               image: blendImage!,
             ),

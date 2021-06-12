@@ -10,7 +10,8 @@ class RotatePage extends StatefulWidget {
   State<RotatePage> createState() => _RotatePageState();
 }
 
-class _RotatePageState extends State<RotatePage> with AutomaticKeepAliveClientMixin {
+class _RotatePageState extends State<RotatePage>
+    with AutomaticKeepAliveClientMixin {
   late BufferImage bufferImage;
 
   RgbaImage? image;
@@ -53,6 +54,7 @@ class _RotatePageState extends State<RotatePage> with AutomaticKeepAliveClientMi
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Rotate Image'),
@@ -62,16 +64,22 @@ class _RotatePageState extends State<RotatePage> with AutomaticKeepAliveClientMi
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Text('原始图像:'),
             Image(
               image: image!,
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(width: 20,),
+                SizedBox(
+                  width: 20,
+                ),
                 Text('旋转图像'),
                 Expanded(
                     child: Slider(
@@ -80,10 +88,14 @@ class _RotatePageState extends State<RotatePage> with AutomaticKeepAliveClientMi
                   max: Math.pi * 2,
                   min: 0,
                 )),
-                SizedBox(width: 20,),
+                SizedBox(
+                  width: 20,
+                ),
               ],
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Image(
               image: rotateImage!,
             ),

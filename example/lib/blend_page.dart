@@ -8,7 +8,8 @@ class BlendPage extends StatefulWidget {
   State<BlendPage> createState() => _BlendPageState();
 }
 
-class _BlendPageState extends State<BlendPage> with AutomaticKeepAliveClientMixin {
+class _BlendPageState extends State<BlendPage>
+    with AutomaticKeepAliveClientMixin {
   late BufferImage bufferImage;
 
   RgbaImage? image;
@@ -83,7 +84,8 @@ class _BlendPageState extends State<BlendPage> with AutomaticKeepAliveClientMixi
   }
 
   _pickerMode() {
-    FixedExtentScrollController _controller = FixedExtentScrollController(initialItem: BlendMode.values.indexOf(_mode));
+    FixedExtentScrollController _controller = FixedExtentScrollController(
+        initialItem: BlendMode.values.indexOf(_mode));
     showDialog(
         context: context,
         builder: (context) {
@@ -92,12 +94,14 @@ class _BlendPageState extends State<BlendPage> with AutomaticKeepAliveClientMixi
             content: Container(
               height: 300,
               child: ListWheelScrollView(
-                  itemExtent:30,
+                itemExtent: 30,
                 useMagnifier: true,
                 magnification: 1.3,
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 controller: _controller,
-                children: BlendMode.values.map<Widget>((item)=>Text(item.toString())).toList(),
+                children: BlendMode.values
+                    .map<Widget>((item) => Text(item.toString()))
+                    .toList(),
               ),
             ),
             actions: <Widget>[
@@ -116,6 +120,7 @@ class _BlendPageState extends State<BlendPage> with AutomaticKeepAliveClientMixi
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Rotate Image'),
@@ -155,7 +160,8 @@ class _BlendPageState extends State<BlendPage> with AutomaticKeepAliveClientMixi
                 ),
                 GestureDetector(
                   onTap: _pickerMode,
-                  child: Text("混合模式:"+_mode.toString().replaceFirst('BlendMode.', '')),
+                  child: Text("混合模式:" +
+                      _mode.toString().replaceFirst('BlendMode.', '')),
                 ),
                 SizedBox(
                   width: 20,
