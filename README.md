@@ -44,6 +44,9 @@ Center(
 - [x] Scale the image (Nearest sample mode and Bilinear sample mode is available)
 - [x] Color/Image mask with a blend mode
 - [x] Rotate
+- [x] drawRect drawImage
+- [x] clipPath drawPath
+- [ ] ImageProvider optimize
 - [ ] any more...
 
 ## Flutter

@@ -1,7 +1,11 @@
-import 'dart:math' as Math;
 
-import 'package:buffer_image/buffer_image.dart';
+import 'package:example/blend_page.dart';
+import 'package:example/draw_page.dart';
+import 'package:example/scale_page.dart';
 import 'package:flutter/material.dart';
+
+import 'more_page.dart';
+import 'rotate_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,11 +16,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'BufferImage Demo',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      home: MyHomePage(title: 'BufferImage Demo'),
     );
   }
 }
@@ -31,87 +34,58 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  RgbaImage? image;
-  RgbaImage? scale1Image;
-  RgbaImage? scale2Image;
-
-  double scale1 = 1.5;
-  SampleMode mode1 = SampleMode.nearest;
-
-  double rotate2 = Math.pi / 6;
-  List<int> clip2 = [0, 0, 0, 0];
+  int _selectedIndex = 0;
+  late PageController _pageController;
+  late List<Widget> _childs;
 
   @override
   void initState() {
     super.initState();
-    _createImage();
+    _childs = [
+      const ScalePage(),
+      const RotatePage(),
+      const BlendPage(),
+      const DrawPage(),
+      const MorePage()
+    ];
+    _pageController = PageController(initialPage: 0);
+    _pageController.addListener(_onPageChange);
   }
-
-  void _createImage() {
-    print('init image');
-    if (image != null) return;
-    BufferImage bufferImage = BufferImage(100, 100);
-    for (int i = 0; i < 100; i++) {
-      for (int j = 0; j < 100; j++) {
-        bufferImage.setColor(
-            i,
-            j,
-            Colors
-                .primaries[(j ~/ 10 * 10 + i ~/ 10) % Colors.primaries.length]);
-      }
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _pageController.animateToPage(_selectedIndex, duration: Duration(milliseconds: 300), curve: Curves.easeOutCubic);
+    });
+  }
+  void _onPageChange(){
+    if(_pageController.page != null && _pageController.page!.toInt() != _selectedIndex){
+      setState(() {
+        _selectedIndex = _pageController.page!.toInt();
+      });
     }
-    image = RgbaImage.fromBufferImage(bufferImage, scale: 1);
-
-    var buffer1 = bufferImage.copy();
-    buffer1.resize(scale1, mode1);
-    scale1Image = RgbaImage.fromBufferImage(buffer1, scale: 1);
-
-    var buffer2 = bufferImage.copy();
-    buffer2.rotate(rotate2);
-    if (clip2[0] > 0 && clip2[1] > 0) {
-      buffer2.clip(clip2[0], clip2[1], clip2[2], clip2[3]);
-    }
-    scale2Image = RgbaImage.fromBufferImage(buffer2, scale: 0.5);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+      body: PageView(
+        controller: _pageController,
+          children: _childs,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('原始图像:'),
-                Image(
-                  image: image!,
-                ),
-              ],
-            ),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text('缩放图像:'),
-              Image(
-                image: scale1Image!,
-              ),
-            ]),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text('旋转图像:'),
-              Image(
-                image: scale2Image!,
-              ),
-            ]),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Color.fromARGB(120, 0, 0, 0),
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.aspect_ratio), label: 'Scale'),
+          BottomNavigationBarItem(icon: Icon(Icons.screen_rotation), label: 'Rotate'),
+          BottomNavigationBarItem(icon: Icon(Icons.layers), label: 'Blend'),
+          BottomNavigationBarItem(icon: Icon(Icons.collections), label: 'Draw'),
+          BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: 'More'),
+        ],
       ),
     );
   }
