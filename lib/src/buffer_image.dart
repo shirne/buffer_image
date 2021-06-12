@@ -51,7 +51,7 @@ class BufferImage {
     return _height;
   }
 
-  _lockWrite(){
+  _lockWrite() {
     assert(!_isLock, 'Can\'t lock image to write!');
     _isLock = true;
   }
@@ -67,8 +67,8 @@ class BufferImage {
   }
 
   /// set [Color] at Offset([x], [y]) without error
-  setColorSafe(int x, int y, Color color){
-    if(x >= 0 && x < width && y >= 0 && y < height){
+  setColorSafe(int x, int y, Color color) {
+    if (x >= 0 && x < width && y >= 0 && y < height) {
       setColor(x, y, color);
     }
   }
@@ -89,14 +89,15 @@ class BufferImage {
   ///
   /// if out of boundary return [defaultColor]
   /// if defaultColor is `null` return nearest boundary color
-  Color getColorSafe(int x, int y, [Color? defaultColor = const Color(0x00ffffff)]){
-    if(x >= 0 && x < width && y >= 0 && y < height){
+  Color getColorSafe(int x, int y,
+      [Color? defaultColor = const Color(0x00ffffff)]) {
+    if (x >= 0 && x < width && y >= 0 && y < height) {
       return getColor(x, y);
-    }else if(defaultColor == null){
-      if(x < 0) x = 0;
-      if(x > width - 1) x = width - 1;
-      if(y < 0) y = 0;
-      if(y > height - 1) y = height - 1;
+    } else if (defaultColor == null) {
+      if (x < 0) x = 0;
+      if (x > width - 1) x = width - 1;
+      if (y < 0) y = 0;
+      if (y > height - 1) y = height - 1;
       return getColor(x, y);
     }
     return defaultColor;
@@ -145,15 +146,17 @@ class BufferImage {
   /// Else adjust the canvas to fit the rotated image
   /// `isAntialias` not implemented
   rotate(double radian,
-  {bool isAntialias = true,
+      {bool isAntialias = true,
       SampleMode sample = SampleMode.bilinear,
       Color bgColor = const Color.fromARGB(0, 255, 255, 255),
       bool isClip = false}) {
     int newWidth = _width;
     int newHeight = _height;
     if (!isClip) {
-      newWidth = (sin(radian).abs() * _width + cos(radian).abs() * _height).ceil();
-      newHeight = (cos(radian).abs() * _width + sin(radian).abs() * _height).ceil();
+      newWidth =
+          (sin(radian).abs() * _width + cos(radian).abs() * _height).ceil();
+      newHeight =
+          (cos(radian).abs() * _width + sin(radian).abs() * _height).ceil();
     }
     Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
     double xr = (_width - 1) / 2;
@@ -229,19 +232,22 @@ class BufferImage {
   }
 
   /// Clip this image with [path], use a [Canvas] render
-  clipPath(Path path, {bool doAntiAlias = true}) async{
+  clipPath(Path path, {bool doAntiAlias = true}) async {
     _lockWrite();
     Rect boundary = path.getBounds();
     PictureRecorder pr = PictureRecorder();
     Canvas canvas = Canvas(pr);
     Image image = await getImage();
-    canvas.drawImage(image, Offset.zero, Paint());
 
-    canvas.clipPath(path, doAntiAlias:doAntiAlias);
+    canvas.clipPath(path, doAntiAlias: doAntiAlias);
+    canvas.drawImage(image, Offset.zero, Paint());
     canvas.save();
     Picture picture = pr.endRecording();
-    image = await picture.toImage(boundary.width.round(), boundary.height.round());
-    _buffer = (await image.toByteData(format: ImageByteFormat.rawRgba))!.buffer.asUint8List();
+    image = await picture.toImage(min(boundary.width.round(), _width),
+        min(boundary.height.round(), _height));
+    _buffer = (await image.toByteData(format: ImageByteFormat.rawRgba))!
+        .buffer
+        .asUint8List();
     _width = image.width;
     _height = image.height;
     _isLock = false;
@@ -280,7 +286,7 @@ class BufferImage {
   }
 
   /// Draw a [rect] on this image with [color], use the [mode]
-  drawRect(Rect rect, Color color, [BlendMode mode = BlendMode.src]){
+  drawRect(Rect rect, Color color, [BlendMode mode = BlendMode.srcOver]) {
     BlendModeAction blend = BlendModeAction(mode);
     int maxX = min(_width, rect.right.round());
     int minY = max(0, rect.top.round());
@@ -294,7 +300,8 @@ class BufferImage {
   }
 
   /// Draw the [image] on this image at [offset], use the [mode]
-  drawImage(BufferImage image, Offset offset, [BlendMode mode = BlendMode.src]){
+  drawImage(BufferImage image, Offset offset,
+      [BlendMode mode = BlendMode.srcOver]) {
     BlendModeAction blend = BlendModeAction(mode);
     int minX = max(0, offset.dx.round());
     int maxX = min(_width, (offset.dx + image.width).round());
@@ -310,7 +317,10 @@ class BufferImage {
   }
 
   /// Draw the [path] on this image, use a [Canvas] render
-  drawPath(Path path, Color color, {BlendMode mode = BlendMode.src, PaintingStyle style = PaintingStyle.fill, double strokeWidth = 0}) async{
+  drawPath(Path path, Color color,
+      {BlendMode mode = BlendMode.srcOver,
+      PaintingStyle style = PaintingStyle.fill,
+      double strokeWidth = 0}) async {
     _lockWrite();
     Rect boundary = path.getBounds();
     PictureRecorder pr = PictureRecorder();
@@ -319,22 +329,25 @@ class BufferImage {
     canvas.drawImage(image, Offset.zero, Paint());
 
     Paint paint = Paint()
-      ..color=color
+      ..color = color
       ..blendMode = mode
       ..style = style
       ..strokeWidth = strokeWidth;
     canvas.drawPath(path, paint);
     canvas.save();
     Picture picture = pr.endRecording();
-    image = await picture.toImage(boundary.width.round(), boundary.height.round());
-    _buffer = (await image.toByteData(format: ImageByteFormat.rawRgba))!.buffer.asUint8List();
+    image = await picture.toImage(max(boundary.width.round(), _width),
+        max(boundary.height.round(), _height));
+    _buffer = (await image.toByteData(format: ImageByteFormat.rawRgba))!
+        .buffer
+        .asUint8List();
     _width = image.width;
     _height = image.height;
     _isLock = false;
   }
 
   /// Get the [Image] Object from this image
-  Future<Image> getImage() async{
+  Future<Image> getImage() async {
     var ib = await ImmutableBuffer.fromUint8List(_buffer);
 
     ImageDescriptor id = ImageDescriptor.raw(ib,
