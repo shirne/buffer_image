@@ -46,6 +46,7 @@ Center(
 - [x] Rotate
 - [x] drawRect drawImage
 - [x] clipPath drawPath
+- [x] GrayImage
 - [ ] ImageProvider optimize
 - [ ] any more...
 

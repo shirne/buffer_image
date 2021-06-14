@@ -6,13 +6,15 @@ import 'dart:ui';
 
 import 'package:flutter/painting.dart';
 
+import 'abstract_image.dart';
+import 'gray_image.dart';
 import 'blend_mode.dart';
 import 'private.dart';
 import 'repeat_mode.dart';
 import 'sample_mode.dart';
 
 /// An image object, pixel data stored in a [Uint8List]
-class BufferImage {
+class BufferImage extends AbstractImage {
   static const bytePerPixel = 4;
   Uint8List _buffer;
 
@@ -43,17 +45,48 @@ class BufferImage {
     return fromImage(await decodeImageFromList(fileData));
   }
 
-  int get width {
-    return _width;
-  }
+  int get width => _width;
 
-  int get height {
-    return _height;
-  }
+  int get height => _height;
 
   _lockWrite() {
     assert(!_isLock, 'Can\'t lock image to write!');
     _isLock = true;
+  }
+
+  int getChannel(int x, int y, [ImageChannel? channel]) {
+    assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
+    assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
+    assert(channel != null);
+    return _buffer[
+        y * _width * bytePerPixel + x * bytePerPixel + channel!.index];
+  }
+
+  int getChannelSafe(int x, int y, [int? defaultValue, ImageChannel? channel]) {
+    if (x >= 0 && x < width && y >= 0 && y < height) {
+      return getChannel(x, y, channel);
+    } else if (defaultValue == null) {
+      if (x < 0) x = 0;
+      if (x > width - 1) x = width - 1;
+      if (y < 0) y = 0;
+      if (y > height - 1) y = height - 1;
+      return getChannel(x, y, channel);
+    }
+    return defaultValue;
+  }
+
+  void setChannel(int x, int y, int value, [ImageChannel? channel]) {
+    assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
+    assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
+    assert(channel != null);
+    _buffer[y * _width * bytePerPixel + x * bytePerPixel + channel!.index] =
+        value;
+  }
+
+  void setChannelSafe(int x, int y, int value, [ImageChannel? channel]) {
+    if (x >= 0 && x < width && y >= 0 && y < height) {
+      setChannel(x, y, value, channel);
+    }
   }
 
   /// set the [Color] at Offset([x], [y])
@@ -360,8 +393,26 @@ class BufferImage {
   }
 
   /// the color data of this image
-  Uint8List get buffer {
-    return _buffer;
+  Uint8List get buffer => _buffer;
+
+  GrayImage toGray() {
+    GrayImage image = GrayImage(_width, _height);
+    for (int x = 0; x < _width; x++) {
+      for (int y = 0; y < _height; y++) {
+        image.setColor(x, y, getColor(x, y));
+      }
+    }
+    return image;
+  }
+
+  static BufferImage fromGray(GrayImage grayImage) {
+    BufferImage image = BufferImage(grayImage.width, grayImage.height);
+    for (int x = 0; x < grayImage.width; x++) {
+      for (int y = 0; y < grayImage.height; y++) {
+        image.setColor(x, y, grayImage.getColor(x, y));
+      }
+    }
+    return image;
   }
 
   /// A copy of this BufferImage

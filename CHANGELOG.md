@@ -1,3 +1,8 @@
+## 0.3.0
+
+* add AbstractImage, GrayImage
+* add getChannel, setChannel for AbstractImage
+
 ## 0.2.1
 
 * fix clipPath, drawPath
