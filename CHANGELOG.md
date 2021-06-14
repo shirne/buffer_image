@@ -1,3 +1,7 @@
+## 0.3.1
+
+* add AbstractImage.copy
+
 ## 0.3.0
 
 * add AbstractImage, GrayImage

@@ -24,6 +24,8 @@ abstract class AbstractImage {
   clip(int newWidth, int newHeight, [int offsetX = 0, int offsetY = 0]);
 
   drawRect(Rect rect, Color color);
+
+  AbstractImage copy();
 }
 
 enum ImageChannel { red, green, blue, alpha }

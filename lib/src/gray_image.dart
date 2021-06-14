@@ -81,8 +81,11 @@ class GrayImage extends AbstractImage {
   void setColor(int x, int y, Color color) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
-    int avg = (color.green + color.blue + color.red) ~/ 3;
-    if(color.alpha < 255 && avg < 255){
+
+    int maxValue = max(color.red, max(color.green, color.blue));
+    int minValue = min(color.red, min(color.green, color.blue));
+    int avg = (maxValue + minValue) ~/ 2;
+    if (color.alpha < 255 && avg < 255) {
       avg = 255 - ((255 - avg) * ((255 - color.alpha) / 255)).round();
     }
     _buffer[y * _width + x] = avg;
@@ -210,13 +213,13 @@ class GrayImage extends AbstractImage {
     }
   }
 
-  binaryzation({int middle = 0x80}){
-    for (int x = 0; x < _width ; x++) {
-      for (int y = 0; y < _height ; y++) {
+  binaryzation({int middle = 0x80}) {
+    for (int x = 0; x < _width; x++) {
+      for (int y = 0; y < _height; y++) {
         int cValue = getChannel(x, y);
-        if(cValue > middle){
+        if (cValue > middle) {
           setChannel(x, y, 255);
-        }else if(cValue < middle){
+        } else if (cValue < middle) {
           setChannel(x, y, 0);
         }
       }
@@ -239,22 +242,25 @@ class GrayImage extends AbstractImage {
           getChannel(x, y + 1),
           getChannel(x + 1, y + 1),
         ];
-        List<int> lowPoints = roundValues.where((rValue) => rValue > cValue + disparity).toList();
-        List<int> highPoints = roundValues.where((rValue) => rValue < cValue - disparity).toList();
+        List<int> lowPoints =
+            roundValues.where((rValue) => rValue > cValue + disparity).toList();
+        List<int> highPoints =
+            roundValues.where((rValue) => rValue < cValue - disparity).toList();
 
-
-        if (lowPoints.length > 6 ) {
+        if (lowPoints.length > 6) {
           count++;
           setChannel(
               x,
               y,
-              lowPoints.reduce((value, element) => value + element) ~/ lowPoints.length);
-        }else if(highPoints.length > 6){
+              lowPoints.reduce((value, element) => value + element) ~/
+                  lowPoints.length);
+        } else if (highPoints.length > 6) {
           count++;
           setChannel(
               x,
               y,
-              highPoints.reduce((value, element) => value + element) ~/ highPoints.length);
+              highPoints.reduce((value, element) => value + element) ~/
+                  highPoints.length);
         }
       }
     }
