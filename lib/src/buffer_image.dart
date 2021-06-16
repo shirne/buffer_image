@@ -379,6 +379,15 @@ class BufferImage extends AbstractImage {
     _isLock = false;
   }
 
+  /// inverse phase
+  void inserve() {
+    for (int i = 0; i < _buffer.length; i++) {
+      if (i % bytePerPixel != 3) {
+        _buffer[i] = 255 - _buffer[i];
+      }
+    }
+  }
+
   /// Get the [Image] Object from this image
   Future<Image> getImage() async {
     var ib = await ImmutableBuffer.fromUint8List(_buffer);

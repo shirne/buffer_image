@@ -1,5 +1,9 @@
 ## 0.3.1
 
+* add AbstractImage.inverse
+
+## 0.3.1
+
 * add AbstractImage.copy
 
 ## 0.3.0

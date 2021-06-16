@@ -6,6 +6,7 @@ import 'abstract_image.dart';
 import 'blend_mode.dart';
 import 'sample_mode.dart';
 
+/// An gray scaled image, each pixel is a gray value in(0~255)
 class GrayImage extends AbstractImage {
   Uint8List _buffer;
 
@@ -22,12 +23,14 @@ class GrayImage extends AbstractImage {
   int get width => _width;
   int get height => _height;
 
+  /// get the gray value(0-255) at Point(x, y). [channel] is ignored
   int getChannel(int x, int y, [ImageChannel? channel]) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
     return _buffer[y * _width + x];
   }
 
+  /// get the gray value(0-255) at Point(x, y) without exception. [channel] is ignored
   int getChannelSafe(int x, int y, [int? defaultValue, ImageChannel? channel]) {
     if (x >= 0 && x < width && y >= 0 && y < height) {
       return getChannel(x, y, channel);
@@ -41,12 +44,14 @@ class GrayImage extends AbstractImage {
     return defaultValue;
   }
 
+  /// set the gray value(0-255) at Point(x, y). [channel] is ignored
   void setChannel(int x, int y, int value, [ImageChannel? channel]) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
     _buffer[y * _width + x] = value;
   }
 
+  /// set the gray value(0-255) at Point(x, y) without exception. [channel] is ignored
   void setChannelSafe(int x, int y, int value, [ImageChannel? channel]) {
     if (x >= 0 && x < width && y >= 0 && y < height) {
       setChannel(x, y, value, channel);
@@ -78,6 +83,7 @@ class GrayImage extends AbstractImage {
     return defaultColor;
   }
 
+  /// set [color](will be grayscale) at Point([x], [y])
   void setColor(int x, int y, Color color) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
@@ -213,7 +219,15 @@ class GrayImage extends AbstractImage {
     }
   }
 
-  binaryzation({int middle = 0x80}) {
+  /// inverse phase
+  void inserve() {
+    for (int i = 0; i < _buffer.length; i++) {
+      _buffer[i] = 255 - _buffer[i];
+    }
+  }
+
+  /// binaryzation this image
+  void binaryzation({int middle = 0x80}) {
     for (int x = 0; x < _width; x++) {
       for (int y = 0; y < _height; y++) {
         int cValue = getChannel(x, y);
@@ -226,6 +240,10 @@ class GrayImage extends AbstractImage {
     }
   }
 
+  /// Remove noise
+  ///
+  /// where the point is greater or lower 7 ~ 8 points around it,
+  /// replace it by the around lower or higher points's avg
   int deNoise({int middle = 0x80, int disparity = 0x20}) {
     int count = 0;
     for (int x = 1; x < _width - 1; x++) {
@@ -267,8 +285,10 @@ class GrayImage extends AbstractImage {
     return count;
   }
 
+  /// the gray data, each element is a gray pixel (0-255)
   Uint8List get buffer => _buffer;
 
+  /// copy and return a new GrayImage
   GrayImage copy() {
     return GrayImage._(Uint8List.fromList(_buffer), _width, _height);
   }

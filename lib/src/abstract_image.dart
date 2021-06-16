@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+/// abstract image
 abstract class AbstractImage {
   int get width;
   int get height;
@@ -24,6 +25,8 @@ abstract class AbstractImage {
   clip(int newWidth, int newHeight, [int offsetX = 0, int offsetY = 0]);
 
   drawRect(Rect rect, Color color);
+
+  void inserve();
 
   AbstractImage copy();
 }
