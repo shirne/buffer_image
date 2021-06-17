@@ -1,3 +1,7 @@
+## 0.3.3
+
+* fix method name spelling
+
 ## 0.3.2
 
 * add AbstractImage.inverse
