@@ -220,7 +220,7 @@ class GrayImage extends AbstractImage {
   }
 
   /// inverse phase
-  void inserve() {
+  void inverse() {
     for (int i = 0; i < _buffer.length; i++) {
       _buffer[i] = 255 - _buffer[i];
     }

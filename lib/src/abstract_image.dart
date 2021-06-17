@@ -26,7 +26,7 @@ abstract class AbstractImage {
 
   drawRect(Rect rect, Color color);
 
-  void inserve();
+  void inverse();
 
   AbstractImage copy();
 }

@@ -380,7 +380,7 @@ class BufferImage extends AbstractImage {
   }
 
   /// inverse phase
-  void inserve() {
+  void inverse() {
     for (int i = 0; i < _buffer.length; i++) {
       if (i % bytePerPixel != 3) {
         _buffer[i] = 255 - _buffer[i];
