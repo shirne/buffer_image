@@ -1,3 +1,8 @@
+## 0.3.4
+
+* add AbstractImage.pixels
+* add AbstractImage.scaleDown
+  
 ## 0.3.3
 
 * fix method name spelling

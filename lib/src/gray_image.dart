@@ -129,6 +129,44 @@ class GrayImage extends AbstractImage {
     _buffer = newBuffer;
   }
 
+  scaleDown(double scale) {
+    int newWidth = (width / scale).ceil();
+    int newHeight = (height / scale).ceil();
+    Uint8List newBuffer = Uint8List(newWidth * newHeight);
+    List<int?> colors = List.filled(scale.ceil() * scale.ceil(), null);
+    for (int y = 0; y < newHeight; y++) {
+      for (int x = 0; x < newWidth; x++) {
+        int count = 0;
+        colors.fillRange(0, colors.length, null);
+        int startY = (y * scale).round();
+        int startX = (x * scale).round();
+        int endY = ((y + 1) * scale).ceil();
+        int endX = ((x + 1) * scale).ceil();
+        for (int sy = startY; sy < endY; sy++) {
+          if (sy >= height) break;
+          for (int sx = startX; sx < endX; sx++) {
+            if (sx >= width) break;
+            count++;
+            colors[(sy - startY) * (endX - startX) + sx - startX] =
+                getChannel(sx, sy);
+          }
+        }
+        if (count < 1) break;
+
+        int newColor = 0;
+        for (int? color in colors) {
+          if (color != null) {
+            newColor += color;
+          }
+        }
+        newBuffer[y * newWidth + x] = (newColor / count).round();
+      }
+    }
+    _width = newWidth;
+    _height = newHeight;
+    _buffer = newBuffer;
+  }
+
   rotate(double radian,
       {SampleMode sample = SampleMode.bilinear,
       int bgColor = 255,

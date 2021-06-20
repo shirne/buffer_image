@@ -173,6 +173,61 @@ class BufferImage extends AbstractImage {
     _buffer = newBuffer;
   }
 
+  /// scale down an image.
+  /// calc the avg channels of the colors in area as the new color
+  @override
+  scaleDown(double scale) {
+    int newWidth = (width / scale).ceil();
+    int newHeight = (height / scale).ceil();
+    Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
+    List<Color?> colors = List.filled(scale.ceil() * scale.ceil(), null);
+    for (int y = 0; y < newHeight; y++) {
+      for (int x = 0; x < newWidth; x++) {
+        int count = 0;
+        colors.fillRange(0, colors.length, null);
+        int startY = (y * scale).round();
+        int startX = (x * scale).round();
+        int endY = ((y + 1) * scale).ceil();
+        int endX = ((x + 1) * scale).ceil();
+        //print("$x,$y => ($startX, $startY) ($endX, $endY)");
+        for (int sy = startY; sy < endY; sy++) {
+          if (sy >= height) break;
+          for (int sx = startX; sx < endX; sx++) {
+            if (sx >= width) break;
+            count++;
+            colors[(sy - startY) * (endX - startX) + sx - startX] =
+                getColor(sx, sy);
+          }
+        }
+        if (count < 1) break;
+
+        int alpha = 0;
+        int red = 0;
+        int green = 0;
+        int blue = 0;
+        for (Color? color in colors) {
+          if (color != null) {
+            alpha += color.alpha;
+            red += color.red;
+            green += color.green;
+            blue += color.blue;
+          }
+        }
+        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel] =
+            (red / count).round();
+        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 1] =
+            (green / count).round();
+        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 2] =
+            (blue / count).round();
+        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 3] =
+            (alpha / count).round();
+      }
+    }
+    _width = newWidth;
+    _height = newHeight;
+    _buffer = newBuffer;
+  }
+
   /// Rotate image by the specified `radian`,
   /// The blank area is filled with the specified `bgColor`
   /// If `isClip`, hold the old width & height (clip the image data out of canvas)

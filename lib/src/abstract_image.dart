@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 
 /// abstract image
@@ -15,6 +16,18 @@ abstract class AbstractImage {
   int getChannelSafe(int x, int y, [int? defaultValue, ImageChannel? channel]);
   void setChannel(int x, int y, int value, [ImageChannel? channel]);
   void setChannelSafe(int x, int y, int value, [ImageChannel? channel]);
+
+  List<int> get pixels {
+    List<int> _pixels = List.filled(width * height, 0);
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        _pixels[y * width + x] = getColor(x, y).value;
+      }
+    }
+    return _pixels;
+  }
+
+  scaleDown(double scale);
 
   resize(double ratio);
 
