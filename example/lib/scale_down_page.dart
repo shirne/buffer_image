@@ -10,17 +10,17 @@ import 'package:flutter/material.dart';
 
 import 'utils.dart';
 
-class GrayPage extends StatefulWidget {
-  const GrayPage({Key? key}) : super(key: key);
+class ScaleDownPage extends StatefulWidget {
+  const ScaleDownPage({Key? key}) : super(key: key);
   @override
-  State<GrayPage> createState() => _GrayPageState();
+  State<ScaleDownPage> createState() => _ScaleDownPageState();
 }
 
-class _GrayPageState extends State<GrayPage> {
+class _ScaleDownPageState extends State<ScaleDownPage> {
   BufferImage? bufferImage;
   GrayImage? grayImage;
-  GrayImage? deNoiseImage;
-  GrayImage? binaryImage;
+  BufferImage? downImage;
+  GrayImage? grayDownImage;
 
   loadFile() async {
     Uint8List? fileData;
@@ -36,12 +36,9 @@ class _GrayPageState extends State<GrayPage> {
         return;
       }
       grayImage = bufferImage?.toGray();
+      downImage = bufferImage!.copy()..scaleDown(2.5);
 
-      deNoiseImage = grayImage!.copy()
-        ..deNoise()
-        ..binaryzation()
-        ..deNoise();
-
+      grayDownImage = grayImage!.copy()..scaleDown(2.5);
       setState(() {});
     } else {
       print('not pick any file');
@@ -107,6 +104,13 @@ class _GrayPageState extends State<GrayPage> {
                     image: RgbaImage.fromBufferImage(bufferImage!, scale: 1),
                   ),
                 ),
+              if (downImage != null)
+                Padding(
+                  padding: EdgeInsets.only(bottom: 20),
+                  child: Image(
+                    image: RgbaImage.fromBufferImage(downImage!, scale: 1),
+                  ),
+                ),
               if (grayImage != null)
                 Padding(
                   padding: EdgeInsets.only(bottom: 20),
@@ -116,21 +120,12 @@ class _GrayPageState extends State<GrayPage> {
                         scale: 1),
                   ),
                 ),
-              if (deNoiseImage != null)
+              if (grayDownImage != null)
                 Padding(
                   padding: EdgeInsets.only(bottom: 20),
                   child: Image(
                     image: RgbaImage.fromBufferImage(
-                        BufferImage.fromGray(deNoiseImage!),
-                        scale: 1),
-                  ),
-                ),
-              if (binaryImage != null)
-                Padding(
-                  padding: EdgeInsets.only(bottom: 20),
-                  child: Image(
-                    image: RgbaImage.fromBufferImage(
-                        BufferImage.fromGray(binaryImage!),
+                        BufferImage.fromGray(grayDownImage!),
                         scale: 1),
                   ),
                 ),

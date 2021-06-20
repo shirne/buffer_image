@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 
+import 'scale_down_page.dart';
 import 'shape_page.dart';
 import 'gray_page.dart';
 
@@ -49,6 +49,17 @@ class _MorePageState extends State<MorePage> {
                 }));
               },
               child: Text('Gray Image'),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const ScaleDownPage();
+                }));
+              },
+              child: Text('ScaleDown Image'),
             ),
             SizedBox(
               height: 20,
