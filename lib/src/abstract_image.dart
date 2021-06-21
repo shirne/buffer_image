@@ -27,6 +27,7 @@ abstract class AbstractImage {
     return _pixels;
   }
 
+  /// use for zoom out an image
   scaleDown(double scale);
 
   resize(double ratio);

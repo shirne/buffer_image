@@ -173,7 +173,7 @@ class BufferImage extends AbstractImage {
     _buffer = newBuffer;
   }
 
-  /// scale down an image.
+  /// zoom out an image.
   /// calc the avg channels of the colors in area as the new color
   @override
   scaleDown(double scale) {

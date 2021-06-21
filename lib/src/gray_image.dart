@@ -6,7 +6,7 @@ import 'abstract_image.dart';
 import 'blend_mode.dart';
 import 'sample_mode.dart';
 
-/// An gray scaled image, each pixel is a gray value in(0~255)
+/// An gray scaled image, each byte is a gray value in(0~255)
 class GrayImage extends AbstractImage {
   Uint8List _buffer;
 
