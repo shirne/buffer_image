@@ -242,9 +242,9 @@ class BufferImage extends AbstractImage {
     int newHeight = _height;
     if (!isClip) {
       newWidth =
-          (sin(radian).abs() * _width + cos(radian).abs() * _height).ceil();
-      newHeight =
           (cos(radian).abs() * _width + sin(radian).abs() * _height).ceil();
+      newHeight =
+          (sin(radian).abs() * _width + cos(radian).abs() * _height).ceil();
     }
     Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
     double xr = (_width - 1) / 2;

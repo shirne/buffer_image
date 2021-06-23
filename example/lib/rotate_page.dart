@@ -29,9 +29,9 @@ class _RotatePageState extends State<RotatePage>
   void _createImage() {
     print('init image');
     if (image != null) return;
-    bufferImage = BufferImage(100, 100);
+    bufferImage = BufferImage(100, 120);
     for (int i = 0; i < 100; i++) {
-      for (int j = 0; j < 100; j++) {
+      for (int j = 0; j < 120; j++) {
         bufferImage.setColor(
             i,
             j,
