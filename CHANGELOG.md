@@ -1,3 +1,7 @@
+## 0.3.5
+
+* fix rotate size
+
 ## 0.3.4
 
 * add AbstractImage.pixels

@@ -1,6 +1,6 @@
 name: buffer_image
 description: A library for modify and display rgba format image data.
-version: 0.3.4
+version: 0.3.5
 homepage: 
 repository: https://github.com/shirne/buffer_image
 
