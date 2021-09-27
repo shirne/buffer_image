@@ -9,7 +9,7 @@ Future<bool?> alert<bool>(BuildContext context, String message,
       return Align(
         alignment: Alignment.center,
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 200, horizontal: 50),
+          padding: const EdgeInsets.symmetric(vertical: 200, horizontal: 50),
           child: AlertDialog(
               title: title == null ? null : Text(title),
               content: Column(
@@ -21,7 +21,7 @@ Future<bool?> alert<bool>(BuildContext context, String message,
               actions: actions ??
                   [
                     TextButton(
-                        child: Text('OK'),
+                        child: const Text('OK'),
                         onPressed: () {
                           Navigator.pop(context, true);
                         })

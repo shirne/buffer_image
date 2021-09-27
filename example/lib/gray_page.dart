@@ -70,7 +70,7 @@ class _GrayPageState extends State<GrayPage> {
     );
     final files = await FileSelectorPlatform.instance
         .openFiles(acceptedTypeGroups: [typeGroup]);
-    if (files.length > 0) {
+    if (files.isNotEmpty) {
       return await files.first.readAsBytes();
     }
     return null;
@@ -80,7 +80,7 @@ class _GrayPageState extends State<GrayPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gray Image'),
+        title: const Text('Gray Image'),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -88,28 +88,24 @@ class _GrayPageState extends State<GrayPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   loadFile();
                 },
-                child: Text('file...'),
+                child: const Text('file...'),
               ),
-              SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               if (bufferImage != null)
                 Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: Image(
                     image: RgbaImage.fromBufferImage(bufferImage!, scale: 1),
                   ),
                 ),
               if (grayImage != null)
                 Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: Image(
                     image: RgbaImage.fromBufferImage(
                         BufferImage.fromGray(grayImage!),
@@ -118,7 +114,7 @@ class _GrayPageState extends State<GrayPage> {
                 ),
               if (deNoiseImage != null)
                 Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: Image(
                     image: RgbaImage.fromBufferImage(
                         BufferImage.fromGray(deNoiseImage!),
@@ -127,7 +123,7 @@ class _GrayPageState extends State<GrayPage> {
                 ),
               if (binaryImage != null)
                 Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: Image(
                     image: RgbaImage.fromBufferImage(
                         BufferImage.fromGray(binaryImage!),

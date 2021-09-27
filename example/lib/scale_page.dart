@@ -1,5 +1,3 @@
-import 'dart:math' as Math;
-
 import 'package:buffer_image/buffer_image.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +17,7 @@ class _ScalePageState extends State<ScalePage>
   RgbaImage? scale2Image;
 
   double _scale = 1;
-  SampleMode _mode = SampleMode.bilinear;
+  final SampleMode _mode = SampleMode.bilinear;
 
   @override
   void initState() {
@@ -58,30 +56,24 @@ class _ScalePageState extends State<ScalePage>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scale Image'),
+        title: const Text('Scale Image'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(
-              height: 20,
-            ),
-            Text('原始图像:'),
+            const SizedBox(height: 20),
+            const Text('原始图像:'),
             Image(
               image: image!,
             ),
-            SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: 20,
-                ),
-                Text('缩放图像'),
+                const SizedBox(width: 20),
+                const Text('缩放图像'),
                 Expanded(
                     child: Slider(
                   onChanged: _updateScale,
@@ -89,14 +81,10 @@ class _ScalePageState extends State<ScalePage>
                   max: 3,
                   min: 0.5,
                 )),
-                SizedBox(
-                  width: 20,
-                ),
+                const SizedBox(width: 20),
               ],
             ),
-            SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             Image(
               image: scaleImage!,
             ),

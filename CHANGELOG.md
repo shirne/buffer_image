@@ -1,3 +1,7 @@
+## 0.3.6
+
+* Code optimization
+
 ## 0.3.5
 
 * fix rotate size

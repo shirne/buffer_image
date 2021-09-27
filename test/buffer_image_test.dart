@@ -1,4 +1,6 @@
-import 'dart:math' as Math;
+// ignore_for_file: avoid_print
+
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,7 +26,7 @@ void main() {
     image.setColor(0, 0, Colors.black);
     expect(image.getColor(0, 0), Colors.black);
 
-    image.rotate(Math.pi / 8);
+    image.rotate(math.pi / 8);
     print("size after rotate: ${image.width} x ${image.height}");
 
     image.clip(100, 100, 15, 15);
@@ -34,8 +36,8 @@ void main() {
 
   test('core', () {
     double radian;
-    radian = Math.atan(double.maxFinite);
+    radian = math.atan(double.maxFinite);
     print(radian);
-    print(Math.cos(radian));
+    print(math.cos(radian));
   });
 }

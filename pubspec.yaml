@@ -1,12 +1,11 @@
 name: buffer_image
 description: A library for modify and display rgba format image data.
-version: 0.3.5
+version: 0.3.6
 homepage: 
 repository: https://github.com/shirne/buffer_image
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.17.0"
 
 dependencies:
   flutter:
@@ -15,6 +14,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: 
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

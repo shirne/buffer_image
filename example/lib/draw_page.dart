@@ -48,7 +48,7 @@ class _BlendPageState extends State<DrawPage>
 
   _updateImage() async {
     var buffer = bufferImage.copy();
-    buffer.drawRect(Rect.fromLTWH(10, 20, 40, 30), _color, _mode);
+    buffer.drawRect(const Rect.fromLTWH(10, 20, 40, 30), _color, _mode);
     blendImage = RgbaImage.fromBufferImage(buffer, scale: 1);
     setState(() {});
   }
@@ -92,7 +92,7 @@ class _BlendPageState extends State<DrawPage>
         builder: (context) {
           return AlertDialog(
             title: const Text('Pick a mode!'),
-            content: Container(
+            content: SizedBox(
               height: 300,
               child: ListWheelScrollView(
                 itemExtent: 30,
@@ -124,30 +124,24 @@ class _BlendPageState extends State<DrawPage>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Rotate Image'),
+        title: const Text('Rotate Image'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(
-              height: 20,
-            ),
-            Text('原始图像:'),
+            const SizedBox(height: 20),
+            const Text('原始图像:'),
             Image(
               image: image!,
             ),
-            SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: 20,
-                ),
-                Text('方块颜色'),
+                const SizedBox(width: 20),
+                const Text('方块颜色'),
                 GestureDetector(
                   onTap: _pickerColor,
                   child: Container(
@@ -156,22 +150,16 @@ class _BlendPageState extends State<DrawPage>
                     color: _color,
                   ),
                 ),
-                SizedBox(
-                  width: 20,
-                ),
+                const SizedBox(width: 20),
                 GestureDetector(
                   onTap: _pickerMode,
                   child: Text("混合模式:" +
                       _mode.toString().replaceFirst('BlendMode.', '')),
                 ),
-                SizedBox(
-                  width: 20,
-                ),
+                const SizedBox(width: 20),
               ],
             ),
-            SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             Image(
               image: blendImage!,
             ),

@@ -1,4 +1,3 @@
-
 library blend_mode;
 
 import 'dart:math';
@@ -116,7 +115,7 @@ class _BlendModeSrcOut extends BlendModeAction {
   @override
   blend(Color src, Color dst) {
     if (src.alpha > 0 && dst.alpha > 0 || (src.alpha == 0 && dst.alpha == 0)) {
-      return Color.fromARGB(0, 0, 0, 0);
+      return const Color.fromARGB(0, 0, 0, 0);
     }
     return Color.fromARGB(
         src.alpha == 0 ? dst.alpha : 0, src.red, src.green, src.blue);
@@ -473,7 +472,7 @@ class _BlendModeClear extends BlendModeAction {
 
   @override
   blend(Color src, Color dst) {
-    return Color.fromARGB(0, 0, 0, 0);
+    return const Color.fromARGB(0, 0, 0, 0);
   }
 }
 

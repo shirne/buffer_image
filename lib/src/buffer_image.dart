@@ -45,8 +45,10 @@ class BufferImage extends AbstractImage {
     return fromImage(await decodeImageFromList(fileData));
   }
 
+  @override
   int get width => _width;
 
+  @override
   int get height => _height;
 
   _lockWrite() {
@@ -54,6 +56,7 @@ class BufferImage extends AbstractImage {
     _isLock = true;
   }
 
+  @override
   int getChannel(int x, int y, [ImageChannel? channel]) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
@@ -62,6 +65,7 @@ class BufferImage extends AbstractImage {
         y * _width * bytePerPixel + x * bytePerPixel + channel!.index];
   }
 
+  @override
   int getChannelSafe(int x, int y, [int? defaultValue, ImageChannel? channel]) {
     if (x >= 0 && x < width && y >= 0 && y < height) {
       return getChannel(x, y, channel);
@@ -75,6 +79,7 @@ class BufferImage extends AbstractImage {
     return defaultValue;
   }
 
+  @override
   void setChannel(int x, int y, int value, [ImageChannel? channel]) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
@@ -83,6 +88,7 @@ class BufferImage extends AbstractImage {
         value;
   }
 
+  @override
   void setChannelSafe(int x, int y, int value, [ImageChannel? channel]) {
     if (x >= 0 && x < width && y >= 0 && y < height) {
       setChannel(x, y, value, channel);
@@ -90,7 +96,8 @@ class BufferImage extends AbstractImage {
   }
 
   /// set the [Color] at Offset([x], [y])
-  setColor(int x, int y, Color color) {
+  @override
+  void setColor(int x, int y, Color color) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
     _buffer[y * _width * bytePerPixel + x * bytePerPixel] = color.red;
@@ -100,13 +107,15 @@ class BufferImage extends AbstractImage {
   }
 
   /// set [Color] at Offset([x], [y]) without error
-  setColorSafe(int x, int y, Color color) {
+  @override
+  void setColorSafe(int x, int y, Color color) {
     if (x >= 0 && x < width && y >= 0 && y < height) {
       setColor(x, y, color);
     }
   }
 
   /// get the [Color] at Offset([x], [y])
+  @override
   Color getColor(int x, int y) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
@@ -122,6 +131,7 @@ class BufferImage extends AbstractImage {
   ///
   /// if out of boundary return [defaultColor]
   /// if defaultColor is `null` return nearest boundary color
+  @override
   Color getColorSafe(int x, int y,
       [Color? defaultColor = const Color(0x00ffffff)]) {
     if (x >= 0 && x < width && y >= 0 && y < height) {
@@ -137,14 +147,16 @@ class BufferImage extends AbstractImage {
   }
 
   /// scale by [ratio] width [sample]
-  resize(double ratio, [SampleMode sample = SampleMode.nearest]) {
+  @override
+  void resize(double ratio, [SampleMode sample = SampleMode.nearest]) {
     int newWidth = (_width * ratio).round();
     int newHeight = (_height * ratio).round();
     resizeTo(newWidth, newHeight, sample);
   }
 
   /// scale to specified size ([newWidth] and [newHeight]) with [sample]
-  resizeTo(int newWidth, int newHeight,
+  @override
+  void resizeTo(int newWidth, int newHeight,
       [SampleMode sample = SampleMode.nearest]) {
     Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
     double xr = (_width - 1) / 2;
@@ -233,7 +245,8 @@ class BufferImage extends AbstractImage {
   /// If `isClip`, hold the old width & height (clip the image data out of canvas)
   /// Else adjust the canvas to fit the rotated image
   /// `isAntialias` not implemented
-  rotate(double radian,
+  @override
+  void rotate(double radian,
       {bool isAntialias = true,
       SampleMode sample = SampleMode.bilinear,
       Color bgColor = const Color.fromARGB(0, 255, 255, 255),
@@ -298,7 +311,8 @@ class BufferImage extends AbstractImage {
   }
 
   /// Clip the image to `newWidth` & `newHeight` from Offset(`offsetX`, `offsetY`)
-  clip(int newWidth, int newHeight, [int offsetX = 0, int offsetY = 0]) {
+  @override
+  void clip(int newWidth, int newHeight, [int offsetX = 0, int offsetY = 0]) {
     Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
 
     // 实际clip边界
@@ -320,7 +334,7 @@ class BufferImage extends AbstractImage {
   }
 
   /// Clip this image with [path], use a [Canvas] render
-  clipPath(Path path, {bool doAntiAlias = true}) async {
+  void clipPath(Path path, {bool doAntiAlias = true}) async {
     _lockWrite();
     Rect boundary = path.getBounds();
     PictureRecorder pr = PictureRecorder();
@@ -342,7 +356,7 @@ class BufferImage extends AbstractImage {
   }
 
   /// Mask the image with [color] use [mode](see [BlendMode])
-  mask(Color color, [BlendMode mode = BlendMode.color]) {
+  void mask(Color color, [BlendMode mode = BlendMode.color]) {
     BlendModeAction blend = BlendModeAction(mode);
     for (int x = 0; x < _width; x++) {
       for (int y = 0; y < _height; y++) {
@@ -353,7 +367,7 @@ class BufferImage extends AbstractImage {
   }
 
   /// Mask the image with another [image] use [mode](see [BlendMode])
-  maskImage(BufferImage image,
+  void maskImage(BufferImage image,
       [BlendMode mode = BlendMode.color,
       Point<int>? offset,
       int repeat = RepeatMode.repeatAll]) {
@@ -374,7 +388,8 @@ class BufferImage extends AbstractImage {
   }
 
   /// Draw a [rect] on this image with [color], use the [mode]
-  drawRect(Rect rect, Color color, [BlendMode mode = BlendMode.srcOver]) {
+  @override
+  void drawRect(Rect rect, Color color, [BlendMode mode = BlendMode.srcOver]) {
     BlendModeAction blend = BlendModeAction(mode);
     int maxX = min(_width, rect.right.round());
     int minY = max(0, rect.top.round());
@@ -388,7 +403,7 @@ class BufferImage extends AbstractImage {
   }
 
   /// Draw the [image] on this image at [offset], use the [mode]
-  drawImage(BufferImage image, Offset offset,
+  void drawImage(BufferImage image, Offset offset,
       [BlendMode mode = BlendMode.srcOver]) {
     BlendModeAction blend = BlendModeAction(mode);
     int minX = max(0, offset.dx.round());
@@ -405,7 +420,7 @@ class BufferImage extends AbstractImage {
   }
 
   /// Draw the [path] on this image, use a [Canvas] render
-  drawPath(Path path, Color color,
+  void drawPath(Path path, Color color,
       {BlendMode mode = BlendMode.srcOver,
       PaintingStyle style = PaintingStyle.fill,
       double strokeWidth = 0}) async {
@@ -435,6 +450,7 @@ class BufferImage extends AbstractImage {
   }
 
   /// inverse phase
+  @override
   void inverse() {
     for (int i = 0; i < _buffer.length; i++) {
       if (i % bytePerPixel != 3) {
@@ -480,6 +496,7 @@ class BufferImage extends AbstractImage {
   }
 
   /// A copy of this BufferImage
+  @override
   BufferImage copy() {
     return BufferImage._(Uint8List.fromList(_buffer), _width, _height);
   }

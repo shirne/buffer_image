@@ -9,10 +9,10 @@ import 'abstract_image.dart';
 
 /// abstract class of sample mode
 abstract class SampleMode {
-  static const nearest = const NearestSampleMode();
-  static const bilinear = const BilinearSampleMode();
-  static const bicubic = const BicubicSampleMode();
-  static const lanczos = const LanczosSampleMode();
+  static const nearest = NearestSampleMode();
+  static const bilinear = BilinearSampleMode();
+  static const bicubic = BicubicSampleMode();
+  static const lanczos = LanczosSampleMode();
 
   final String mode;
   const SampleMode(this.mode);
@@ -41,6 +41,7 @@ class NearestSampleMode extends SampleMode {
     return image.getColorSafe(point.x.round(), point.y.round(), obColor);
   }
 
+  @override
   int sampleChannel(Point<double> point, AbstractImage image,
       [ImageChannel? channel, int? obValue]) {
     return image.getChannel(point.x.round(), point.y.round(), channel);
@@ -89,6 +90,7 @@ class BilinearSampleMode extends SampleMode {
     return newColor;
   }
 
+  @override
   int sampleChannel(Point<double> point, AbstractImage image,
       [ImageChannel? channel, int? obValue]) {
     double x = point.x.floorToDouble();

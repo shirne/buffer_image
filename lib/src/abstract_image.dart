@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:ui';
 
 /// abstract image
@@ -28,17 +27,17 @@ abstract class AbstractImage {
   }
 
   /// use for zoom out an image
-  scaleDown(double scale);
+  void scaleDown(double scale);
 
-  resize(double ratio);
+  void resize(double ratio);
 
-  resizeTo(int newWidth, int newHeight);
+  void resizeTo(int newWidth, int newHeight);
 
-  rotate(double radian);
+  void rotate(double radian);
 
-  clip(int newWidth, int newHeight, [int offsetX = 0, int offsetY = 0]);
+  void clip(int newWidth, int newHeight, [int offsetX = 0, int offsetY = 0]);
 
-  drawRect(Rect rect, Color color);
+  void drawRect(Rect rect, Color color);
 
   void inverse();
 

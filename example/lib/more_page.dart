@@ -21,49 +21,41 @@ class _MorePageState extends State<MorePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('More'),
+        title: const Text('More'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return const ShapePage();
                 }));
               },
-              child: Text('Draw Shape & Clip'),
+              child: const Text('Draw Shape & Clip'),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return const GrayPage();
                 }));
               },
-              child: Text('Gray Image'),
+              child: const Text('Gray Image'),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return const ScaleDownPage();
                 }));
               },
-              child: Text('ScaleDown Image'),
+              child: const Text('ScaleDown Image'),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),

@@ -20,10 +20,13 @@ class GrayImage extends AbstractImage {
 
   GrayImage._(this._buffer, this._width, this._height);
 
+  @override
   int get width => _width;
+  @override
   int get height => _height;
 
   /// get the gray value(0-255) at Point(x, y). [channel] is ignored
+  @override
   int getChannel(int x, int y, [ImageChannel? channel]) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
@@ -31,6 +34,7 @@ class GrayImage extends AbstractImage {
   }
 
   /// get the gray value(0-255) at Point(x, y) without exception. [channel] is ignored
+  @override
   int getChannelSafe(int x, int y, [int? defaultValue, ImageChannel? channel]) {
     if (x >= 0 && x < width && y >= 0 && y < height) {
       return getChannel(x, y, channel);
@@ -45,6 +49,7 @@ class GrayImage extends AbstractImage {
   }
 
   /// set the gray value(0-255) at Point(x, y). [channel] is ignored
+  @override
   void setChannel(int x, int y, int value, [ImageChannel? channel]) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
@@ -52,12 +57,14 @@ class GrayImage extends AbstractImage {
   }
 
   /// set the gray value(0-255) at Point(x, y) without exception. [channel] is ignored
+  @override
   void setChannelSafe(int x, int y, int value, [ImageChannel? channel]) {
     if (x >= 0 && x < width && y >= 0 && y < height) {
       setChannel(x, y, value, channel);
     }
   }
 
+  @override
   Color getColor(int x, int y) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
@@ -69,6 +76,7 @@ class GrayImage extends AbstractImage {
     );
   }
 
+  @override
   Color getColorSafe(int x, int y,
       [Color? defaultColor = const Color(0x00ffffff)]) {
     if (x >= 0 && x < width && y >= 0 && y < height) {
@@ -84,6 +92,7 @@ class GrayImage extends AbstractImage {
   }
 
   /// set [color](will be grayscale) at Point([x], [y])
+  @override
   void setColor(int x, int y, Color color) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
@@ -97,17 +106,20 @@ class GrayImage extends AbstractImage {
     _buffer[y * _width + x] = avg;
   }
 
-  setColorSafe(int x, int y, Color color) {
+  @override
+  void setColorSafe(int x, int y, Color color) {
     if (x >= 0 && x < width && y >= 0 && y < height) {
       setColor(x, y, color);
     }
   }
 
-  resize(double ratio) {
+  @override
+  void resize(double ratio) {
     resizeTo((_width * ratio).round(), (_height * ratio).round());
   }
 
-  resizeTo(int newWidth, int newHeight,
+  @override
+  void resizeTo(int newWidth, int newHeight,
       [SampleMode sample = SampleMode.nearest]) {
     Uint8List newBuffer = Uint8List(newWidth * newHeight);
     double xr = (_width - 1) / 2;
@@ -129,7 +141,8 @@ class GrayImage extends AbstractImage {
     _buffer = newBuffer;
   }
 
-  scaleDown(double scale) {
+  @override
+  void scaleDown(double scale) {
     int newWidth = (width / scale).ceil();
     int newHeight = (height / scale).ceil();
     Uint8List newBuffer = Uint8List(newWidth * newHeight);
@@ -167,7 +180,8 @@ class GrayImage extends AbstractImage {
     _buffer = newBuffer;
   }
 
-  rotate(double radian,
+  @override
+  void rotate(double radian,
       {SampleMode sample = SampleMode.bilinear,
       int bgColor = 255,
       bool isClip = false}) {
@@ -223,7 +237,8 @@ class GrayImage extends AbstractImage {
     _buffer = newBuffer;
   }
 
-  clip(int newWidth, int newHeight, [int offsetX = 0, int offsetY = 0]) {
+  @override
+  void clip(int newWidth, int newHeight, [int offsetX = 0, int offsetY = 0]) {
     Uint8List newBuffer = Uint8List(newWidth * newHeight);
 
     // 实际clip边界
@@ -244,7 +259,8 @@ class GrayImage extends AbstractImage {
     _buffer = newBuffer;
   }
 
-  drawRect(Rect rect, Color color, [BlendMode mode = BlendMode.srcOver]) {
+  @override
+  void drawRect(Rect rect, Color color, [BlendMode mode = BlendMode.srcOver]) {
     BlendModeAction blend = BlendModeAction(mode);
     int maxX = min(_width, rect.right.round());
     int minY = max(0, rect.top.round());
@@ -258,6 +274,7 @@ class GrayImage extends AbstractImage {
   }
 
   /// inverse phase
+  @override
   void inverse() {
     for (int i = 0; i < _buffer.length; i++) {
       _buffer[i] = 255 - _buffer[i];
@@ -327,6 +344,7 @@ class GrayImage extends AbstractImage {
   Uint8List get buffer => _buffer;
 
   /// copy and return a new GrayImage
+  @override
   GrayImage copy() {
     return GrayImage._(Uint8List.fromList(_buffer), _width, _height);
   }

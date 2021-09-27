@@ -67,7 +67,7 @@ class _ScaleDownPageState extends State<ScaleDownPage> {
     );
     final files = await FileSelectorPlatform.instance
         .openFiles(acceptedTypeGroups: [typeGroup]);
-    if (files.length > 0) {
+    if (files.isNotEmpty) {
       return await files.first.readAsBytes();
     }
     return null;
@@ -77,7 +77,7 @@ class _ScaleDownPageState extends State<ScaleDownPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gray Image'),
+        title: const Text('Gray Image'),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -85,35 +85,31 @@ class _ScaleDownPageState extends State<ScaleDownPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   loadFile();
                 },
-                child: Text('file...'),
+                child: const Text('file...'),
               ),
-              SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               if (bufferImage != null)
                 Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: Image(
                     image: RgbaImage.fromBufferImage(bufferImage!, scale: 1),
                   ),
                 ),
               if (downImage != null)
                 Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: Image(
                     image: RgbaImage.fromBufferImage(downImage!, scale: 1),
                   ),
                 ),
               if (grayImage != null)
                 Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: Image(
                     image: RgbaImage.fromBufferImage(
                         BufferImage.fromGray(grayImage!),
@@ -122,7 +118,7 @@ class _ScaleDownPageState extends State<ScaleDownPage> {
                 ),
               if (grayDownImage != null)
                 Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: Image(
                     image: RgbaImage.fromBufferImage(
                         BufferImage.fromGray(grayDownImage!),
