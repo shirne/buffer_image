@@ -334,7 +334,7 @@ class BufferImage extends AbstractImage {
   }
 
   /// Clip this image with [path], use a [Canvas] render
-  void clipPath(Path path, {bool doAntiAlias = true}) async {
+  Future<void> clipPath(Path path, {bool doAntiAlias = true}) async {
     _lockWrite();
     Rect boundary = path.getBounds();
     PictureRecorder pr = PictureRecorder();
@@ -420,7 +420,7 @@ class BufferImage extends AbstractImage {
   }
 
   /// Draw the [path] on this image, use a [Canvas] render
-  void drawPath(Path path, Color color,
+  Future<void> drawPath(Path path, Color color,
       {BlendMode mode = BlendMode.srcOver,
       PaintingStyle style = PaintingStyle.fill,
       double strokeWidth = 0}) async {

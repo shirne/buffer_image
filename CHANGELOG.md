@@ -1,3 +1,7 @@
+## 0.3.7
+
+* Fix async return type
+
 ## 0.3.6
 
 * Code optimization
