@@ -1,5 +1,6 @@
 library buffer_image;
 
+import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
@@ -18,7 +19,7 @@ class BufferImage extends AbstractImage {
   static const bytePerPixel = 4;
   Uint8List _buffer;
 
-  bool _isLock = false;
+  Completer<bool>? _locker;
   int _width;
   int _height;
 
@@ -51,9 +52,17 @@ class BufferImage extends AbstractImage {
   @override
   int get height => _height;
 
-  _lockWrite() {
-    assert(!_isLock, 'Can\'t lock image to write!');
-    _isLock = true;
+  Future<void> _lockWrite() async {
+    if (_locker != null && !_locker!.isCompleted) {
+      await _locker!.future;
+    }
+    _locker = Completer();
+  }
+
+  _unLock([bool success = true]) {
+    if (_locker != null && !_locker!.isCompleted) {
+      _locker!.complete(success);
+    }
   }
 
   @override
@@ -335,7 +344,7 @@ class BufferImage extends AbstractImage {
 
   /// Clip this image with [path], use a [Canvas] render
   Future<void> clipPath(Path path, {bool doAntiAlias = true}) async {
-    _lockWrite();
+    await _lockWrite();
     Rect boundary = path.getBounds();
     PictureRecorder pr = PictureRecorder();
     Canvas canvas = Canvas(pr);
@@ -352,7 +361,7 @@ class BufferImage extends AbstractImage {
         .asUint8List();
     _width = image.width;
     _height = image.height;
-    _isLock = false;
+    _unLock();
   }
 
   /// Mask the image with [color] use [mode](see [BlendMode])
@@ -424,7 +433,7 @@ class BufferImage extends AbstractImage {
       {BlendMode mode = BlendMode.srcOver,
       PaintingStyle style = PaintingStyle.fill,
       double strokeWidth = 0}) async {
-    _lockWrite();
+    await _lockWrite();
     Rect boundary = path.getBounds();
     PictureRecorder pr = PictureRecorder();
     Canvas canvas = Canvas(pr);
@@ -446,7 +455,7 @@ class BufferImage extends AbstractImage {
         .asUint8List();
     _width = image.width;
     _height = image.height;
-    _isLock = false;
+    _unLock();
   }
 
   /// inverse phase
