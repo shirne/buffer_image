@@ -3,8 +3,6 @@ library sample_mode;
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/painting.dart';
-
 import 'abstract_image.dart';
 
 /// abstract class of sample mode

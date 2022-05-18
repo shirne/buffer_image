@@ -1,3 +1,7 @@
+## 0.3.8
+
+* Improvement locker
+
 ## 0.3.7
 
 * Fix async return type
