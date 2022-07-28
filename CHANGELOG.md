@@ -1,3 +1,7 @@
+## 0.3.9
+
+* add drawIcon & drawText
+
 ## 0.3.8
 
 * Improvement locker
