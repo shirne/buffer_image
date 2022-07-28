@@ -12,12 +12,16 @@ class DrawPage extends StatefulWidget {
 class _BlendPageState extends State<DrawPage>
     with AutomaticKeepAliveClientMixin {
   late BufferImage bufferImage;
+  TextEditingController sizeController = TextEditingController(text: '14');
 
   RgbaImage? image;
   RgbaImage? blendImage;
+  RgbaImage? iconImage;
 
   Color _color = Colors.blueAccent;
   BlendMode _mode = BlendMode.src;
+  double size = 14;
+  IconData icon = Icons.camera;
 
   @override
   void initState() {
@@ -44,12 +48,21 @@ class _BlendPageState extends State<DrawPage>
     image = RgbaImage.fromBufferImage(bufferImage, scale: 1);
 
     _updateImage();
+    _updateIconImage();
   }
 
   _updateImage() async {
     var buffer = bufferImage.copy();
     buffer.drawRect(const Rect.fromLTWH(10, 20, 40, 30), _color, _mode);
     blendImage = RgbaImage.fromBufferImage(buffer, scale: 1);
+    setState(() {});
+  }
+
+  _updateIconImage() async {
+    var buffer = bufferImage.copy();
+    await buffer.drawIcon(icon, size,
+        Offset(buffer.width - size - 8, buffer.height - size - 8), Colors.blue);
+    iconImage = RgbaImage.fromBufferImage(buffer, scale: 1);
     setState(() {});
   }
 
@@ -66,7 +79,6 @@ class _BlendPageState extends State<DrawPage>
                 onColorChanged: (value) {
                   pickerColor = value;
                 },
-                showLabel: true,
                 pickerAreaHeightPercent: 0.8,
               ),
             ),
@@ -163,6 +175,64 @@ class _BlendPageState extends State<DrawPage>
             Image(
               image: blendImage!,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(width: 20),
+                const Text('图标'),
+                SizedBox(
+                  width: 80,
+                  child: DropdownButton<IconData>(
+                      value: Icons.camera,
+                      items: [
+                        DropdownMenuItem(
+                          value: Icons.camera,
+                          child: Text('camera'),
+                        ),
+                        DropdownMenuItem(
+                          value: Icons.home,
+                          child: Text('home'),
+                        ),
+                        DropdownMenuItem(
+                          value: Icons.ac_unit,
+                          child: Text('ac_unit'),
+                        ),
+                      ],
+                      onChanged: (v) {
+                        if (v == null) return;
+                        setState(() {
+                          icon = v;
+                        });
+                        _updateIconImage();
+                      }),
+                ),
+                const SizedBox(width: 20),
+                SizedBox(
+                  width: 80,
+                  child: TextField(
+                    controller: sizeController,
+                    onChanged: (String v) {
+                      if (v.isEmpty) return;
+                      final newSize = double.tryParse(v);
+                      if (newSize != null && newSize > 0) {
+                        size = newSize;
+                        _updateIconImage();
+                      } else {
+                        sizeController.text = size.toString();
+                      }
+                    },
+                    decoration:
+                        InputDecoration(isDense: true, prefixText: '尺寸'),
+                  ),
+                ),
+                const SizedBox(width: 20),
+              ],
+            ),
+            const SizedBox(height: 20),
+            if (iconImage != null)
+              Image(
+                image: iconImage!,
+              ),
           ],
         ),
       ),
