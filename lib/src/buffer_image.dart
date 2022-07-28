@@ -5,7 +5,8 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:flutter/painting.dart';
+import 'package:flutter/painting.dart' hide TextStyle;
+import 'package:flutter/widgets.dart' show IconData;
 
 import 'abstract_image.dart';
 import 'gray_image.dart';
@@ -394,6 +395,58 @@ class BufferImage extends AbstractImage {
         }
       }
     }
+  }
+
+  Future<void> drawIcon(IconData icon, double size, Offset offset, Color color,
+      [BlendMode mode = BlendMode.srcOver]) async {
+    await _lockWrite();
+    PictureRecorder pr = PictureRecorder();
+    Canvas canvas = Canvas(pr);
+    Image image = await getImage();
+    canvas.drawImage(image, Offset.zero, Paint());
+    final pb = ParagraphBuilder(ParagraphStyle(
+      fontFamily: icon.fontFamily,
+      fontSize: size,
+    ))
+      ..pushStyle(TextStyle(color: color))
+      ..addText(String.fromCharCode(icon.codePoint))
+      ..pop();
+    canvas.drawParagraph(
+        pb.build()..layout(ParagraphConstraints(width: size)), offset);
+    canvas.save();
+    Picture picture = pr.endRecording();
+    image = await picture.toImage(_width, _height);
+    _buffer = (await image.toByteData(format: ImageByteFormat.rawRgba))!
+        .buffer
+        .asUint8List();
+    _width = image.width;
+    _height = image.height;
+    _unLock();
+  }
+
+  Future<void> drawText(String text, TextStyle style, Offset offset,
+      [BlendMode mode = BlendMode.srcOver]) async {
+    await _lockWrite();
+    PictureRecorder pr = PictureRecorder();
+    Canvas canvas = Canvas(pr);
+    Image image = await getImage();
+    canvas.drawImage(image, Offset.zero, Paint());
+    final pb = ParagraphBuilder(ParagraphStyle())
+      ..pushStyle(style)
+      ..addText(text)
+      ..pop();
+    canvas.drawParagraph(
+        pb.build()..layout(ParagraphConstraints(width: width.toDouble())),
+        offset);
+    canvas.save();
+    Picture picture = pr.endRecording();
+    image = await picture.toImage(_width, _height);
+    _buffer = (await image.toByteData(format: ImageByteFormat.rawRgba))!
+        .buffer
+        .asUint8List();
+    _width = image.width;
+    _height = image.height;
+    _unLock();
   }
 
   /// Draw a [rect] on this image with [color], use the [mode]
