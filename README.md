@@ -39,16 +39,16 @@ Center(
 ![Preview](preview/01.png)
 
 ## Features
-- [x] BufferImage for edit the pixel image
-- [x] ImageProvider for display in Image Widget
-- [x] Scale the image (Nearest sample mode and Bilinear sample mode is available)
-- [x] Color/Image mask with a blend mode
-- [x] Rotate
-- [x] drawRect drawImage
-- [x] clipPath drawPath
-- [x] GrayImage
-- [ ] ImageProvider optimize
-- [ ] any more...
+- ✅ BufferImage for edit the pixel image
+- ✅ ImageProvider for display in Image Widget
+- ✅ Scale the image (Nearest sample mode and Bilinear sample mode is available)
+- ✅ Color/Image mask with a blend mode
+- ✅ Rotate
+- ✅ drawRect drawImage
+- ✅ clipPath drawPath
+- ✅ GrayImage
+- 🚧 ImageProvider optimize
+- 🚧 any more...
 
 ## Flutter
 
