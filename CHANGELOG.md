@@ -1,3 +1,7 @@
+## 0.3.10
+
+* add multi GrayScale algorithm
+
 ## 0.3.9
 
 * add drawIcon & drawText

@@ -184,7 +184,7 @@ class _BlendPageState extends State<DrawPage>
                   width: 80,
                   child: DropdownButton<IconData>(
                       value: Icons.camera,
-                      items: [
+                      items: const [
                         DropdownMenuItem(
                           value: Icons.camera,
                           child: Text('camera'),
@@ -221,8 +221,10 @@ class _BlendPageState extends State<DrawPage>
                         sizeController.text = size.toString();
                       }
                     },
-                    decoration:
-                        InputDecoration(isDense: true, prefixText: '尺寸'),
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      prefixText: '尺寸',
+                    ),
                   ),
                 ),
                 const SizedBox(width: 20),

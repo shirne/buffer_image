@@ -46,7 +46,7 @@ Center(
 - ✅ Rotate
 - ✅ drawRect drawImage
 - ✅ clipPath drawPath
-- ✅ GrayImage
+- ✅ GrayImage & multiple GrayScale algorithm
 - 🚧 ImageProvider optimize
 - 🚧 any more...
 

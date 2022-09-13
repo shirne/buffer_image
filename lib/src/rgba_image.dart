@@ -1,6 +1,5 @@
 library buffer_image;
 
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -22,11 +21,15 @@ class RgbaImage extends ImageProvider<RgbaImage> {
         height = image.height;
 
   /// initial from rgba `bytes` and the specified `width` & `height`
-  const RgbaImage(this.bytes,
-      {required this.width, required this.height, this.scale = 1.0});
+  const RgbaImage(
+    this.bytes, {
+    required this.width,
+    required this.height,
+    this.scale = 1.0,
+  });
 
   @override
-  ImageStreamCompleter load(RgbaImage key, DecoderCallback decode) {
+  ImageStreamCompleter loadBuffer(RgbaImage key, DecoderBufferCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -34,7 +37,10 @@ class RgbaImage extends ImageProvider<RgbaImage> {
     );
   }
 
-  Future<ui.Codec> _loadAsync(RgbaImage key, DecoderCallback decode) async {
+  Future<ui.Codec> _loadAsync(
+    RgbaImage key,
+    DecoderBufferCallback decode,
+  ) async {
     assert(key == this);
 
     var buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
@@ -55,7 +61,7 @@ class RgbaImage extends ImageProvider<RgbaImage> {
   }
 
   @override
-  int get hashCode => hashValues(bytes.hashCode, scale);
+  int get hashCode => Object.hash(bytes.hashCode, scale);
 
   @override
   String toString() =>

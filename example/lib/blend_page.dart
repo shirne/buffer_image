@@ -65,7 +65,6 @@ class _BlendPageState extends State<BlendPage>
                 onColorChanged: (value) {
                   pickerColor = value;
                 },
-                showLabel: true,
                 pickerAreaHeightPercent: 0.8,
               ),
             ),

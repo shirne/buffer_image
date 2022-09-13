@@ -10,14 +10,14 @@ typedef GrayScale = int Function(int, int, int);
 
 int gsAvgChannel(int r, int g, int b) => (r + g + b) ~/ 3;
 
-int gsAlgorithmChannel(int r, int g, int b) =>
+int gsPsychologic(int r, int g, int b) =>
     (r * 0.299 + g * 0.587 + b * 0.114).round();
 
-int gsDesathmChannel(int r, int g, int b) =>
+int gsDesathm(int r, int g, int b) =>
     (max(r, max(g, b)) + min(r, min(g, b))) ~/ 2;
 
-int gsLighterChannel(int r, int g, int b) => max(r, max(g, b));
-int gsDarkerChannel(int r, int g, int b) => min(r, min(g, b));
+int gsLighter(int r, int g, int b) => max(r, max(g, b));
+int gsDarker(int r, int g, int b) => min(r, min(g, b));
 
 int gsRedChannel(int r, int g, int b) => r;
 int gsGreenChannel(int r, int g, int b) => g;
@@ -114,7 +114,7 @@ class GrayImage extends AbstractImage {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
 
-    int gray = (grayScale ?? gsAlgorithmChannel).call(
+    int gray = (grayScale ?? gsPsychologic).call(
       color.red,
       color.green,
       color.blue,
