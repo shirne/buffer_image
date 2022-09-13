@@ -537,11 +537,11 @@ class BufferImage extends AbstractImage {
   /// the color data of this image
   Uint8List get buffer => _buffer;
 
-  GrayImage toGray() {
+  GrayImage toGray([GrayScale? grayScale]) {
     GrayImage image = GrayImage(_width, _height);
     for (int x = 0; x < _width; x++) {
       for (int y = 0; y < _height; y++) {
-        image.setColor(x, y, getColor(x, y));
+        image.setColor(x, y, getColor(x, y), grayScale);
       }
     }
     return image;

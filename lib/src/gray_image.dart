@@ -6,6 +6,23 @@ import 'abstract_image.dart';
 import 'blend_mode.dart';
 import 'sample_mode.dart';
 
+typedef GrayScale = int Function(int, int, int);
+
+int gsAvgChannel(int r, int g, int b) => (r + g + b) ~/ 3;
+
+int gsAlgorithmChannel(int r, int g, int b) =>
+    (r * 0.299 + g * 0.587 + b * 0.114).round();
+
+int gsDesathmChannel(int r, int g, int b) =>
+    (max(r, max(g, b)) + min(r, min(g, b))) ~/ 2;
+
+int gsLighterChannel(int r, int g, int b) => max(r, max(g, b));
+int gsDarkerChannel(int r, int g, int b) => min(r, min(g, b));
+
+int gsRedChannel(int r, int g, int b) => r;
+int gsGreenChannel(int r, int g, int b) => g;
+int gsBlurChannel(int r, int g, int b) => b;
+
 /// An gray scaled image, each byte is a gray value in(0~255)
 class GrayImage extends AbstractImage {
   Uint8List _buffer;
@@ -93,17 +110,19 @@ class GrayImage extends AbstractImage {
 
   /// set [color](will be grayscale) at Point([x], [y])
   @override
-  void setColor(int x, int y, Color color) {
+  void setColor(int x, int y, Color color, [GrayScale? grayScale]) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
 
-    int maxValue = max(color.red, max(color.green, color.blue));
-    int minValue = min(color.red, min(color.green, color.blue));
-    int avg = (maxValue + minValue) ~/ 2;
-    if (color.alpha < 255 && avg < 255) {
-      avg = 255 - ((255 - avg) * ((255 - color.alpha) / 255)).round();
+    int gray = (grayScale ?? gsAlgorithmChannel).call(
+      color.red,
+      color.green,
+      color.blue,
+    );
+    if (color.alpha < 255 && gray < 255) {
+      gray = 255 - ((255 - gray) * ((255 - color.alpha) / 255)).round();
     }
-    _buffer[y * _width + x] = avg;
+    _buffer[y * _width + x] = gray;
   }
 
   @override
