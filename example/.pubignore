@@ -1,0 +1,8 @@
+*.log
+build
+linux
+windows
+macos
+android
+ios
+web
