@@ -110,10 +110,11 @@ class BufferImage extends AbstractImage {
   void setColor(int x, int y, Color color) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
-    _buffer[y * _width * bytePerPixel + x * bytePerPixel] = color.red;
-    _buffer[y * _width * bytePerPixel + x * bytePerPixel + 1] = color.green;
-    _buffer[y * _width * bytePerPixel + x * bytePerPixel + 2] = color.blue;
-    _buffer[y * _width * bytePerPixel + x * bytePerPixel + 3] = color.alpha;
+    final offset = y * _width * bytePerPixel + x * bytePerPixel;
+    _buffer[offset] = color.red;
+    _buffer[offset + 1] = color.green;
+    _buffer[offset + 2] = color.blue;
+    _buffer[offset + 3] = color.alpha;
   }
 
   /// set [Color] at Offset([x], [y]) without error
@@ -129,11 +130,12 @@ class BufferImage extends AbstractImage {
   Color getColor(int x, int y) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
+    final offset = y * _width * bytePerPixel + x * bytePerPixel;
     return Color.fromARGB(
-      _buffer[y * _width * bytePerPixel + x * bytePerPixel + 3],
-      _buffer[y * _width * bytePerPixel + x * bytePerPixel],
-      _buffer[y * _width * bytePerPixel + x * bytePerPixel + 1],
-      _buffer[y * _width * bytePerPixel + x * bytePerPixel + 2],
+      _buffer[offset + 3],
+      _buffer[offset],
+      _buffer[offset + 1],
+      _buffer[offset + 2],
     );
   }
 
@@ -178,16 +180,13 @@ class BufferImage extends AbstractImage {
 
     for (int x = 0; x < newWidth; x++) {
       for (int y = 0; y < newHeight; y++) {
+        final offset = y * newWidth * bytePerPixel + x * bytePerPixel;
         Color newColor = sample.sample(
             Point<double>((x - nxr) * xp + xr, (y - nyr) * yp + yr), this);
-        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel] =
-            newColor.red;
-        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 1] =
-            newColor.green;
-        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 2] =
-            newColor.blue;
-        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 3] =
-            newColor.alpha;
+        newBuffer[offset] = newColor.red;
+        newBuffer[offset + 1] = newColor.green;
+        newBuffer[offset + 2] = newColor.blue;
+        newBuffer[offset + 3] = newColor.alpha;
       }
     }
     _width = newWidth;
@@ -235,14 +234,11 @@ class BufferImage extends AbstractImage {
             blue += color.blue;
           }
         }
-        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel] =
-            (red / count).round();
-        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 1] =
-            (green / count).round();
-        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 2] =
-            (blue / count).round();
-        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 3] =
-            (alpha / count).round();
+        final offset = y * newWidth * bytePerPixel + x * bytePerPixel;
+        newBuffer[offset] = (red / count).round();
+        newBuffer[offset + 1] = (green / count).round();
+        newBuffer[offset + 2] = (blue / count).round();
+        newBuffer[offset + 3] = (alpha / count).round();
       }
     }
     _width = newWidth;
@@ -304,14 +300,11 @@ class BufferImage extends AbstractImage {
         if (orig.x > -1 && orig.x < _width && orig.y > -1 && orig.y < _height) {
           newColor = sample.sample(orig, this, bgColor);
         }
-        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel] =
-            newColor.red;
-        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 1] =
-            newColor.green;
-        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 2] =
-            newColor.blue;
-        newBuffer[y * newWidth * bytePerPixel + x * bytePerPixel + 3] =
-            newColor.alpha;
+        final offset = y * newWidth * bytePerPixel + x * bytePerPixel;
+        newBuffer[offset] = newColor.red;
+        newBuffer[offset + 1] = newColor.green;
+        newBuffer[offset + 2] = newColor.blue;
+        newBuffer[offset + 3] = newColor.alpha;
       }
     }
 

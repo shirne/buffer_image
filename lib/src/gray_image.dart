@@ -85,11 +85,12 @@ class GrayImage extends AbstractImage {
   Color getColor(int x, int y) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
+    final channel = _buffer[y * _width + x];
     return Color.fromARGB(
       255,
-      _buffer[y * _width + x],
-      _buffer[y * _width + x],
-      _buffer[y * _width + x],
+      channel,
+      channel,
+      channel,
     );
   }
 
