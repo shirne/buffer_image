@@ -2,11 +2,19 @@ import 'dart:ui';
 
 /// abstract image
 abstract class AbstractImage {
+  int get bytePerPixel;
   int get width;
   int get height;
   Color getColor(int x, int y);
-  Color getColorSafe(int x, int y,
-      [Color? defaultColor = const Color(0x00ffffff)]);
+  Color getColorSafe(
+    int x,
+    int y, [
+    Color? defaultColor = const Color(0x00ffffff),
+  ]);
+
+  int getOffset(int x, int y) {
+    return y * width * bytePerPixel + x * bytePerPixel;
+  }
 
   void setColor(int x, int y, Color color);
   void setColorSafe(int x, int y, Color color);

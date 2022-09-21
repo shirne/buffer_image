@@ -43,9 +43,13 @@ class RgbaImage extends ImageProvider<RgbaImage> {
   ) async {
     assert(key == this);
 
-    var buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
-    var descriptor = ui.ImageDescriptor.raw(buffer,
-        width: width, height: height, pixelFormat: ui.PixelFormat.rgba8888);
+    final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+    final descriptor = ui.ImageDescriptor.raw(
+      buffer,
+      width: width,
+      height: height,
+      pixelFormat: ui.PixelFormat.rgba8888,
+    );
     return await descriptor.instantiateCodec();
   }
 

@@ -25,7 +25,10 @@ int gsBlurChannel(int r, int g, int b) => b;
 
 /// An gray scaled image, each byte is a gray value in(0~255)
 class GrayImage extends AbstractImage {
-  Uint8List _buffer;
+  @override
+  int get bytePerPixel => 1;
+
+  ByteData _buffer;
 
   int _width;
   int _height;
@@ -33,7 +36,7 @@ class GrayImage extends AbstractImage {
   GrayImage(width, height)
       : _width = width,
         _height = height,
-        _buffer = Uint8List(width * height);
+        _buffer = Uint8List(width * height).buffer.asByteData();
 
   GrayImage._(this._buffer, this._width, this._height);
 
@@ -47,7 +50,7 @@ class GrayImage extends AbstractImage {
   int getChannel(int x, int y, [ImageChannel? channel]) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
-    return _buffer[y * _width + x];
+    return _buffer.getUint8(y * _width + x);
   }
 
   /// get the gray value(0-255) at Point(x, y) without exception. [channel] is ignored
@@ -70,7 +73,7 @@ class GrayImage extends AbstractImage {
   void setChannel(int x, int y, int value, [ImageChannel? channel]) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
-    _buffer[y * _width + x] = value;
+    _buffer.setUint8(y * _width + x, value);
   }
 
   /// set the gray value(0-255) at Point(x, y) without exception. [channel] is ignored
@@ -85,7 +88,7 @@ class GrayImage extends AbstractImage {
   Color getColor(int x, int y) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
-    final channel = _buffer[y * _width + x];
+    final channel = _buffer.getUint8(y * _width + x);
     return Color.fromARGB(
       255,
       channel,
@@ -123,7 +126,7 @@ class GrayImage extends AbstractImage {
     if (color.alpha < 255 && gray < 255) {
       gray = 255 - ((255 - gray) * ((255 - color.alpha) / 255)).round();
     }
-    _buffer[y * _width + x] = gray;
+    _buffer.setUint8(y * _width + x, gray);
   }
 
   @override
@@ -139,8 +142,11 @@ class GrayImage extends AbstractImage {
   }
 
   @override
-  void resizeTo(int newWidth, int newHeight,
-      [SampleMode sample = SampleMode.nearest]) {
+  void resizeTo(
+    int newWidth,
+    int newHeight, [
+    SampleMode sample = SampleMode.nearest,
+  ]) {
     Uint8List newBuffer = Uint8List(newWidth * newHeight);
     double xr = (_width - 1) / 2;
     double yr = (_height - 1) / 2;
@@ -158,7 +164,7 @@ class GrayImage extends AbstractImage {
     }
     _width = newWidth;
     _height = newHeight;
-    _buffer = newBuffer;
+    _buffer = newBuffer.buffer.asByteData();
   }
 
   @override
@@ -197,7 +203,7 @@ class GrayImage extends AbstractImage {
     }
     _width = newWidth;
     _height = newHeight;
-    _buffer = newBuffer;
+    _buffer = newBuffer.buffer.asByteData();
   }
 
   @override
@@ -254,7 +260,7 @@ class GrayImage extends AbstractImage {
 
     _width = newWidth;
     _height = newHeight;
-    _buffer = newBuffer;
+    _buffer = newBuffer.buffer.asByteData();
   }
 
   @override
@@ -269,14 +275,14 @@ class GrayImage extends AbstractImage {
       List.copyRange(
         newBuffer,
         (y - offsetY) * newWidth,
-        _buffer,
+        _buffer.buffer.asUint8List(),
         ((y * _width) + offsetX),
         ((y * _width) + offsetX + clipWidth),
       );
     }
     _width = newWidth;
     _height = newHeight;
-    _buffer = newBuffer;
+    _buffer = newBuffer.buffer.asByteData();
   }
 
   @override
@@ -296,8 +302,8 @@ class GrayImage extends AbstractImage {
   /// inverse phase
   @override
   void inverse() {
-    for (int i = 0; i < _buffer.length; i++) {
-      _buffer[i] = 255 - _buffer[i];
+    for (int i = 0; i < _buffer.lengthInBytes; i++) {
+      _buffer.setUint8(i, 255 - _buffer.getUint8(i));
     }
   }
 
@@ -361,11 +367,15 @@ class GrayImage extends AbstractImage {
   }
 
   /// the gray data, each element is a gray pixel (0-255)
-  Uint8List get buffer => _buffer;
+  Uint8List get buffer => _buffer.buffer.asUint8List();
 
   /// copy and return a new GrayImage
   @override
   GrayImage copy() {
-    return GrayImage._(Uint8List.fromList(_buffer), _width, _height);
+    return GrayImage._(
+      Uint8List.fromList(_buffer.buffer.asUint8List()).buffer.asByteData(),
+      _width,
+      _height,
+    );
   }
 }

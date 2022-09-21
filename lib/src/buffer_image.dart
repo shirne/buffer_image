@@ -17,8 +17,11 @@ import 'sample_mode.dart';
 
 /// An image object, pixel data stored in a [Uint8List]
 class BufferImage extends AbstractImage {
-  static const bytePerPixel = 4;
-  Uint8List _buffer;
+  static const _bytePerPixel = 4;
+  @override
+  int get bytePerPixel => 4;
+
+  ByteData _buffer;
 
   Completer<bool>? _locker;
   int _width;
@@ -28,18 +31,19 @@ class BufferImage extends AbstractImage {
   BufferImage(width, height)
       : _width = width,
         _height = height,
-        _buffer = Uint8List(width * height * bytePerPixel);
+        _buffer = Uint8List(width * height * _bytePerPixel).buffer.asByteData();
 
   BufferImage._(this._buffer, this._width, this._height);
 
   /// load data from an [Image]
   static Future<BufferImage> fromImage(Image image) async {
     return BufferImage._(
-        (await image.toByteData(format: ImageByteFormat.rawRgba))!
-            .buffer
-            .asUint8List(),
-        image.width,
-        image.height);
+      (await image.toByteData(format: ImageByteFormat.rawRgba))!
+          .buffer
+          .asByteData(),
+      image.width,
+      image.height,
+    );
   }
 
   /// load image from a image [fileData] use system codec([decodeImageFromList])
@@ -71,8 +75,8 @@ class BufferImage extends AbstractImage {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
     assert(channel != null);
-    return _buffer[
-        y * _width * bytePerPixel + x * bytePerPixel + channel!.index];
+    return _buffer.getUint8(
+        y * _width * bytePerPixel + x * bytePerPixel + channel!.index);
   }
 
   @override
@@ -94,8 +98,10 @@ class BufferImage extends AbstractImage {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
     assert(channel != null);
-    _buffer[y * _width * bytePerPixel + x * bytePerPixel + channel!.index] =
-        value;
+    _buffer.setUint8(
+      y * _width * bytePerPixel + x * bytePerPixel + channel!.index,
+      value,
+    );
   }
 
   @override
@@ -110,11 +116,11 @@ class BufferImage extends AbstractImage {
   void setColor(int x, int y, Color color) {
     assert(x >= 0 && x < width, 'x($x) out of with boundary(0 - $width)');
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
-    final offset = y * _width * bytePerPixel + x * bytePerPixel;
-    _buffer[offset] = color.red;
-    _buffer[offset + 1] = color.green;
-    _buffer[offset + 2] = color.blue;
-    _buffer[offset + 3] = color.alpha;
+    final offset = getOffset(x, y);
+    _buffer.setUint8(offset, color.red);
+    _buffer.setUint8(offset + 1, color.green);
+    _buffer.setUint8(offset + 2, color.blue);
+    _buffer.setUint8(offset + 3, color.alpha);
   }
 
   /// set [Color] at Offset([x], [y]) without error
@@ -132,10 +138,10 @@ class BufferImage extends AbstractImage {
     assert(y >= 0 && y < height, 'y($y) out of height boundary(0 - $height)');
     final offset = y * _width * bytePerPixel + x * bytePerPixel;
     return Color.fromARGB(
-      _buffer[offset + 3],
-      _buffer[offset],
-      _buffer[offset + 1],
-      _buffer[offset + 2],
+      _buffer.getUint8(offset + 3),
+      _buffer.getUint8(offset),
+      _buffer.getUint8(offset + 1),
+      _buffer.getUint8(offset + 2),
     );
   }
 
@@ -191,7 +197,7 @@ class BufferImage extends AbstractImage {
     }
     _width = newWidth;
     _height = newHeight;
-    _buffer = newBuffer;
+    _buffer = newBuffer.buffer.asByteData();
   }
 
   /// zoom out an image.
@@ -243,7 +249,7 @@ class BufferImage extends AbstractImage {
     }
     _width = newWidth;
     _height = newHeight;
-    _buffer = newBuffer;
+    _buffer = newBuffer.buffer.asByteData();
   }
 
   /// Rotate image by the specified `radian`,
@@ -310,7 +316,7 @@ class BufferImage extends AbstractImage {
 
     _width = newWidth;
     _height = newHeight;
-    _buffer = newBuffer;
+    _buffer = newBuffer.buffer.asByteData();
   }
 
   /// Clip the image to `newWidth` & `newHeight` from Offset(`offsetX`, `offsetY`)
@@ -326,14 +332,14 @@ class BufferImage extends AbstractImage {
       List.copyRange(
         newBuffer,
         (y - offsetY) * newWidth * bytePerPixel,
-        _buffer,
+        _buffer.buffer.asUint8List(),
         ((y * _width) + offsetX) * bytePerPixel,
         ((y * _width) + offsetX + clipWidth) * bytePerPixel,
       );
     }
     _width = newWidth;
     _height = newHeight;
-    _buffer = newBuffer;
+    _buffer = newBuffer.buffer.asByteData();
   }
 
   /// Clip this image with [path], use a [Canvas] render
@@ -352,7 +358,7 @@ class BufferImage extends AbstractImage {
         min(boundary.height.round(), _height));
     _buffer = (await image.toByteData(format: ImageByteFormat.rawRgba))!
         .buffer
-        .asUint8List();
+        .asByteData();
     _width = image.width;
     _height = image.height;
     _unLock();
@@ -411,7 +417,7 @@ class BufferImage extends AbstractImage {
     image = await picture.toImage(_width, _height);
     _buffer = (await image.toByteData(format: ImageByteFormat.rawRgba))!
         .buffer
-        .asUint8List();
+        .asByteData();
     _width = image.width;
     _height = image.height;
     _unLock();
@@ -436,7 +442,7 @@ class BufferImage extends AbstractImage {
     image = await picture.toImage(_width, _height);
     _buffer = (await image.toByteData(format: ImageByteFormat.rawRgba))!
         .buffer
-        .asUint8List();
+        .asByteData();
     _width = image.width;
     _height = image.height;
     _unLock();
@@ -498,7 +504,7 @@ class BufferImage extends AbstractImage {
         max(boundary.height.round(), _height));
     _buffer = (await image.toByteData(format: ImageByteFormat.rawRgba))!
         .buffer
-        .asUint8List();
+        .asByteData();
     _width = image.width;
     _height = image.height;
     _unLock();
@@ -507,16 +513,16 @@ class BufferImage extends AbstractImage {
   /// inverse phase
   @override
   void inverse() {
-    for (int i = 0; i < _buffer.length; i++) {
+    for (int i = 0; i < _buffer.lengthInBytes; i++) {
       if (i % bytePerPixel != 3) {
-        _buffer[i] = 255 - _buffer[i];
+        _buffer.setUint8(i, 255 - _buffer.getUint8(i));
       }
     }
   }
 
   /// Get the [Image] Object from this image
   Future<Image> getImage() async {
-    var ib = await ImmutableBuffer.fromUint8List(_buffer);
+    var ib = await ImmutableBuffer.fromUint8List(_buffer.buffer.asUint8List());
 
     ImageDescriptor id = ImageDescriptor.raw(ib,
         width: width, height: height, pixelFormat: PixelFormat.rgba8888);
@@ -528,7 +534,7 @@ class BufferImage extends AbstractImage {
   }
 
   /// the color data of this image
-  Uint8List get buffer => _buffer;
+  Uint8List get buffer => _buffer.buffer.asUint8List();
 
   GrayImage toGray([GrayScale? grayScale]) {
     GrayImage image = GrayImage(_width, _height);
@@ -553,6 +559,10 @@ class BufferImage extends AbstractImage {
   /// A copy of this BufferImage
   @override
   BufferImage copy() {
-    return BufferImage._(Uint8List.fromList(_buffer), _width, _height);
+    return BufferImage._(
+      Uint8List.fromList(_buffer.buffer.asUint8List()).buffer.asByteData(),
+      _width,
+      _height,
+    );
   }
 }
