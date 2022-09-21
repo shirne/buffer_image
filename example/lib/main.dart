@@ -89,9 +89,13 @@ class _MyHomePageState extends State<MyHomePage> {
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.aspect_ratio), label: 'Scale'),
+            icon: Icon(Icons.aspect_ratio),
+            label: 'Scale',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.screen_rotation), label: 'Rotate'),
+            icon: Icon(Icons.screen_rotation),
+            label: 'Rotate',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.layers), label: 'Blend'),
           BottomNavigationBarItem(icon: Icon(Icons.collections), label: 'Draw'),
           BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: 'More'),

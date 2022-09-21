@@ -62,48 +62,58 @@ class _GrayPageState extends State<GrayPage> {
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  loadFile();
-                },
-                child: const Text('file...'),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    loadFile();
+                  },
+                  child: const Text('file...'),
+                ),
               ),
               const SizedBox(height: 20),
               if (bufferImage != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Image(
-                    image: RgbaImage.fromBufferImage(bufferImage!, scale: 1),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Image(
+                      image: RgbaImage.fromBufferImage(bufferImage!, scale: 1),
+                    ),
                   ),
                 ),
               if (grayImage != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Image(
-                    image: RgbaImage.fromBufferImage(
-                        BufferImage.fromGray(grayImage!),
-                        scale: 1),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Image(
+                      image: RgbaImage.fromBufferImage(
+                          BufferImage.fromGray(grayImage!),
+                          scale: 1),
+                    ),
                   ),
                 ),
               if (deNoiseImage != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Image(
-                    image: RgbaImage.fromBufferImage(
-                        BufferImage.fromGray(deNoiseImage!),
-                        scale: 1),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Image(
+                      image: RgbaImage.fromBufferImage(
+                          BufferImage.fromGray(deNoiseImage!),
+                          scale: 1),
+                    ),
                   ),
                 ),
               if (binaryImage != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Image(
-                    image: RgbaImage.fromBufferImage(
-                        BufferImage.fromGray(binaryImage!),
-                        scale: 1),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Image(
+                      image: RgbaImage.fromBufferImage(
+                          BufferImage.fromGray(binaryImage!),
+                          scale: 1),
+                    ),
                   ),
                 ),
             ],

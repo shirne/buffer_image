@@ -59,14 +59,16 @@ class _ScaleDownPageState extends State<ScaleDownPage> {
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  loadFile();
-                },
-                child: const Text('file...'),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    loadFile();
+                  },
+                  child: const Text('file...'),
+                ),
               ),
               const SizedBox(height: 20),
               if (bufferImage != null)
@@ -88,8 +90,9 @@ class _ScaleDownPageState extends State<ScaleDownPage> {
                   padding: const EdgeInsets.only(bottom: 20),
                   child: Image(
                     image: RgbaImage.fromBufferImage(
-                        BufferImage.fromGray(grayImage!),
-                        scale: 1),
+                      BufferImage.fromGray(grayImage!),
+                      scale: 1,
+                    ),
                   ),
                 ),
               if (grayDownImage != null)
@@ -97,8 +100,9 @@ class _ScaleDownPageState extends State<ScaleDownPage> {
                   padding: const EdgeInsets.only(bottom: 20),
                   child: Image(
                     image: RgbaImage.fromBufferImage(
-                        BufferImage.fromGray(grayDownImage!),
-                        scale: 1),
+                      BufferImage.fromGray(grayDownImage!),
+                      scale: 1,
+                    ),
                   ),
                 ),
             ],
