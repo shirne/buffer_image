@@ -35,6 +35,9 @@ class BufferImage extends AbstractImage {
 
   BufferImage._(this._buffer, this._width, this._height);
 
+  BufferImage.raw(Uint8List data, {required int width, required int height})
+      : this._(data.buffer.asByteData(), width, height);
+
   /// load data from an [Image]
   static Future<BufferImage> fromImage(Image image) async {
     return BufferImage._(

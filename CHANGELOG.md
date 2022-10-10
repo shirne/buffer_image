@@ -1,3 +1,8 @@
+## 0.3.12
+
+* add GrayImage.raw & BufferImage.raw
+* add GrayImage.getImage for RawImage
+
 ## 0.3.11
 
 * fix scaleDown

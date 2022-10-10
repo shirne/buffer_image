@@ -40,6 +40,9 @@ class GrayImage extends AbstractImage {
 
   GrayImage._(this._buffer, this._width, this._height);
 
+  GrayImage.raw(Uint8List data, {required int width, required int height})
+      : this._(data.buffer.asByteData(), width, height);
+
   @override
   int get width => _width;
   @override
@@ -365,6 +368,27 @@ class GrayImage extends AbstractImage {
       }
     }
     return count;
+  }
+
+  /// Get the [Image] Object from this image
+  Future<Image> getImage() async {
+    final length = buffer.length;
+    final origData = Uint8List(length * 4);
+    for (int i = 0; i < length; i++) {
+      origData[i * 4] = buffer[i];
+      origData[i * 4 + 1] = buffer[i];
+      origData[i * 4 + 2] = buffer[i];
+      origData[i * 4 + 3] = 0xff;
+    }
+    var ib = await ImmutableBuffer.fromUint8List(origData);
+
+    ImageDescriptor id = ImageDescriptor.raw(ib,
+        width: width, height: height, pixelFormat: PixelFormat.rgba8888);
+
+    Codec cdc = await id.instantiateCodec();
+
+    FrameInfo fi = await cdc.getNextFrame();
+    return fi.image;
   }
 
   /// the gray data, each element is a gray pixel (0-255)
