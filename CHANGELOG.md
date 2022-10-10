@@ -1,3 +1,7 @@
+## 0.3.11
+
+* fix scaleDown
+
 ## 0.3.10
 
 * add multi GrayScale algorithm

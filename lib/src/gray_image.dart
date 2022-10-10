@@ -171,22 +171,23 @@ class GrayImage extends AbstractImage {
   void scaleDown(double scale) {
     int newWidth = (width / scale).ceil();
     int newHeight = (height / scale).ceil();
+    int scaleCeil = scale.ceil();
     Uint8List newBuffer = Uint8List(newWidth * newHeight);
-    List<int?> colors = List.filled(scale.ceil() * scale.ceil(), null);
+    List<int?> colors = List.filled(scaleCeil * scaleCeil, null);
     for (int y = 0; y < newHeight; y++) {
       for (int x = 0; x < newWidth; x++) {
         int count = 0;
         colors.fillRange(0, colors.length, null);
         int startY = (y * scale).round();
         int startX = (x * scale).round();
-        int endY = ((y + 1) * scale).ceil();
-        int endX = ((x + 1) * scale).ceil();
+        int endY = startY + scaleCeil;
+        int endX = startX + scaleCeil;
         for (int sy = startY; sy < endY; sy++) {
           if (sy >= height) break;
           for (int sx = startX; sx < endX; sx++) {
             if (sx >= width) break;
             count++;
-            colors[(sy - startY) * (endX - startX) + sx - startX] =
+            colors[(sy - startY) * scaleCeil + sx - startX] =
                 getChannel(sx, sy);
           }
         }

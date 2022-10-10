@@ -206,24 +206,24 @@ class BufferImage extends AbstractImage {
   scaleDown(double scale) {
     int newWidth = (width / scale).ceil();
     int newHeight = (height / scale).ceil();
+    int scaleCeil = scale.ceil();
     Uint8List newBuffer = Uint8List(newWidth * newHeight * bytePerPixel);
-    List<Color?> colors = List.filled(scale.ceil() * scale.ceil(), null);
+    List<Color?> colors = List.filled(scaleCeil * scaleCeil, null);
     for (int y = 0; y < newHeight; y++) {
       for (int x = 0; x < newWidth; x++) {
         int count = 0;
         colors.fillRange(0, colors.length, null);
         int startY = (y * scale).round();
         int startX = (x * scale).round();
-        int endY = ((y + 1) * scale).ceil();
-        int endX = ((x + 1) * scale).ceil();
+        int endY = startY + scaleCeil;
+        int endX = startX + scaleCeil;
         //print("$x,$y => ($startX, $startY) ($endX, $endY)");
         for (int sy = startY; sy < endY; sy++) {
           if (sy >= height) break;
           for (int sx = startX; sx < endX; sx++) {
             if (sx >= width) break;
             count++;
-            colors[(sy - startY) * (endX - startX) + sx - startX] =
-                getColor(sx, sy);
+            colors[(sy - startY) * scaleCeil + sx - startX] = getColor(sx, sy);
           }
         }
         if (count < 1) break;
