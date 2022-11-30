@@ -113,11 +113,7 @@ class _BlendModeSrcOut extends BlendModeAction {
 
   @override
   blend(Color src, Color dst) {
-    if (src.alpha > 0 && dst.alpha > 0 || (src.alpha == 0 && dst.alpha == 0)) {
-      return const Color.fromARGB(0, 0, 0, 0);
-    }
-    return Color.fromARGB(
-        src.alpha == 0 ? dst.alpha : 0, src.red, src.green, src.blue);
+    return src.withAlpha(src.alpha * (255 - dst.alpha) ~/ 255);
   }
 }
 
@@ -129,7 +125,7 @@ class _BlendModeSrcIn extends BlendModeAction {
     if (src.alpha == 0 || dst.alpha == 0) {
       return src.withAlpha(0);
     }
-    return Color.fromARGB(dst.alpha, src.red, src.green, src.blue);
+    return src.withAlpha(src.alpha * dst.alpha ~/ 255);
   }
 }
 
@@ -258,7 +254,7 @@ class _BlendModeOverlay extends BlendModeAction {
 
   // todo equal ?
   int _channel(int src, int dst) {
-    if (dst < src) {
+    if (dst <= src) {
       return src * dst ~/ 255;
     } else {
       return 255 - ((255 - src) * (255 - dst) ~/ 255);
@@ -274,7 +270,7 @@ class _BlendModeModulate extends BlendModeAction {
     int red = _channel(src.red, dst.red);
     int green = _channel(src.green, dst.green);
     int blue = _channel(src.blue, dst.blue);
-    int alpha = src.alpha + (dst.alpha * (255 - src.alpha)) ~/ 0xff;
+    int alpha = _channel(src.alpha, dst.alpha);
 
     return Color.fromARGB(alpha, red, green, blue);
   }
@@ -387,7 +383,7 @@ class _BlendModeDstOut extends BlendModeAction {
       return dst;
     }
 
-    return dst.withAlpha(255 - src.alpha);
+    return dst.withAlpha(dst.alpha * (255 - src.alpha) ~/ 255);
   }
 }
 
@@ -396,7 +392,7 @@ class _BlendModeDstIn extends BlendModeAction {
 
   @override
   blend(Color src, Color dst) {
-    return Color.fromARGB(src.alpha, dst.red, dst.green, dst.blue);
+    return dst.withAlpha(src.alpha * dst.alpha ~/ 255);
   }
 }
 
