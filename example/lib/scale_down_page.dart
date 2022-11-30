@@ -53,7 +53,7 @@ class _ScaleDownPageState extends State<ScaleDownPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gray Image'),
+        title: const Text('Scale down Image'),
       ),
       body: SafeArea(
         child: SingleChildScrollView(

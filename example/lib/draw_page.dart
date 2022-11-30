@@ -51,14 +51,14 @@ class _BlendPageState extends State<DrawPage>
     _updateIconImage();
   }
 
-  _updateImage() async {
+  Future<void> _updateImage() async {
     var buffer = bufferImage.copy();
     buffer.drawRect(const Rect.fromLTWH(10, 20, 40, 30), _color, _mode);
     blendImage = RgbaImage.fromBufferImage(buffer, scale: 1);
     setState(() {});
   }
 
-  _updateIconImage() async {
+  Future<void> _updateIconImage() async {
     var buffer = bufferImage.copy();
     await buffer.drawIcon(icon, size,
         Offset(buffer.width - size - 8, buffer.height - size - 8), Colors.blue);
@@ -66,7 +66,7 @@ class _BlendPageState extends State<DrawPage>
     setState(() {});
   }
 
-  _pickerColor() {
+  void _pickerColor() {
     Color pickerColor = _color;
     showDialog(
         context: context,
@@ -96,7 +96,7 @@ class _BlendPageState extends State<DrawPage>
         });
   }
 
-  _pickerMode() {
+  void _pickerMode() {
     FixedExtentScrollController _controller = FixedExtentScrollController(
         initialItem: BlendMode.values.indexOf(_mode));
     showDialog(

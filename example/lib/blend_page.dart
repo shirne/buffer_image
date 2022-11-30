@@ -2,6 +2,8 @@ import 'package:buffer_image/buffer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
+import 'blend_compare.dart';
+
 class BlendPage extends StatefulWidget {
   const BlendPage({Key? key}) : super(key: key);
   @override
@@ -45,14 +47,14 @@ class _BlendPageState extends State<BlendPage>
     _updateBlend();
   }
 
-  _updateBlend() async {
+  Future<void> _updateBlend() async {
     var buffer = bufferImage.copy();
     buffer.mask(_currentColor, _mode);
     rotateImage = RgbaImage.fromBufferImage(buffer, scale: 1);
     setState(() {});
   }
 
-  _pickerColor() {
+  void _pickerColor() {
     Color pickerColor = _currentColor;
     showDialog(
         context: context,
@@ -82,7 +84,7 @@ class _BlendPageState extends State<BlendPage>
         });
   }
 
-  _pickerMode() {
+  void _pickerMode() {
     FixedExtentScrollController _controller = FixedExtentScrollController(
         initialItem: BlendMode.values.indexOf(_mode));
     showDialog(
@@ -131,9 +133,10 @@ class _BlendPageState extends State<BlendPage>
           children: <Widget>[
             const SizedBox(height: 20),
             const Text('原始图像:'),
-            Image(
-              image: image!,
-            ),
+            if (image != null)
+              Image(
+                image: image!,
+              ),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -158,7 +161,17 @@ class _BlendPageState extends State<BlendPage>
               ],
             ),
             const SizedBox(height: 20),
-            Image(image: rotateImage!),
+            if (rotateImage != null) Image(image: rotateImage!),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return const BlendComparePage();
+                }));
+              },
+              child: const Text('Compare with flutter blend'),
+            ),
           ],
         ),
       ),

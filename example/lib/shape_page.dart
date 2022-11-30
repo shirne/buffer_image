@@ -38,13 +38,13 @@ class _ShapePageState extends State<ShapePage>
     image = RgbaImage.fromBufferImage(bufferImage, scale: 1);
   }
 
-  drawPath(Path path, Color color) async {
+  Future<void> drawPath(Path path, Color color) async {
     bufferImage.drawPath(path, color);
     image = RgbaImage.fromBufferImage(bufferImage, scale: 1);
     setState(() {});
   }
 
-  clipPath(Path path) async {
+  Future<void> clipPath(Path path) async {
     bufferImage.clipPath(path);
     image = RgbaImage.fromBufferImage(bufferImage, scale: 1);
     setState(() {});

@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'package:buffer_image/buffer_image.dart';
 import 'package:flutter/material.dart';
 
@@ -12,9 +13,9 @@ class _ScalePageState extends State<ScalePage>
     with AutomaticKeepAliveClientMixin {
   late BufferImage bufferImage;
 
-  RgbaImage? image;
-  RgbaImage? scaleImage;
-  RgbaImage? scale2Image;
+  ui.Image? image;
+  ui.Image? scaleImage;
+  ui.Image? scale2Image;
 
   double _scale = 1;
   final SampleMode _mode = SampleMode.bilinear;
@@ -28,7 +29,7 @@ class _ScalePageState extends State<ScalePage>
   @override
   bool get wantKeepAlive => true;
 
-  void _createImage() {
+  void _createImage() async {
     print('init image');
     if (image != null) return;
     bufferImage = BufferImage(100, 100);
@@ -38,7 +39,7 @@ class _ScalePageState extends State<ScalePage>
             Colors.primaries[(j * 10 + i) % Colors.primaries.length]);
       }
     }
-    image = RgbaImage.fromBufferImage(bufferImage, scale: 1);
+    image = await bufferImage.getImage();
 
     _updateScale(1.5);
   }
@@ -47,7 +48,7 @@ class _ScalePageState extends State<ScalePage>
     _scale = v;
     var buffer1 = bufferImage.copy();
     buffer1.resize(_scale, _mode);
-    scaleImage = RgbaImage.fromBufferImage(buffer1, scale: 1);
+    scaleImage = await buffer1.getImage();
     setState(() {});
   }
 
@@ -65,9 +66,10 @@ class _ScalePageState extends State<ScalePage>
           children: <Widget>[
             const SizedBox(height: 20),
             const Text('原始图像:'),
-            Image(
-              image: image!,
-            ),
+            if (image != null)
+              RawImage(
+                image: image!,
+              ),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -85,9 +87,10 @@ class _ScalePageState extends State<ScalePage>
               ],
             ),
             const SizedBox(height: 20),
-            Image(
-              image: scaleImage!,
-            ),
+            if (scaleImage != null)
+              RawImage(
+                image: scaleImage!,
+              ),
           ],
         ),
       ),

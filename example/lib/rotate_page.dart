@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:buffer_image/buffer_image.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,8 @@ class _RotatePageState extends State<RotatePage>
     with AutomaticKeepAliveClientMixin {
   late BufferImage bufferImage;
 
-  RgbaImage? image;
-  RgbaImage? rotateImage;
+  ui.Image? image;
+  ui.Image? rotateImage;
 
   double _rotate = 0;
   final SampleMode _mode = SampleMode.bilinear;
@@ -26,7 +27,7 @@ class _RotatePageState extends State<RotatePage>
     _createImage();
   }
 
-  void _createImage() {
+  Future<void> _createImage() async {
     print('init image');
     if (image != null) return;
     bufferImage = BufferImage(100, 120);
@@ -39,7 +40,7 @@ class _RotatePageState extends State<RotatePage>
                 .primaries[(j ~/ 10 * 10 + i ~/ 10) % Colors.primaries.length]);
       }
     }
-    image = RgbaImage.fromBufferImage(bufferImage, scale: 1);
+    image = await bufferImage.getImage();
 
     _updateRotate(1.5);
   }
@@ -48,7 +49,7 @@ class _RotatePageState extends State<RotatePage>
     _rotate = v;
     var buffer = bufferImage.copy();
     buffer.rotate(_rotate, sample: _mode);
-    rotateImage = RgbaImage.fromBufferImage(buffer, scale: 1);
+    rotateImage = await buffer.getImage();
     setState(() {});
   }
 
@@ -66,9 +67,10 @@ class _RotatePageState extends State<RotatePage>
           children: <Widget>[
             const SizedBox(height: 20),
             const Text('原始图像:'),
-            Image(
-              image: image!,
-            ),
+            if (image != null)
+              RawImage(
+                image: image!,
+              ),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -86,9 +88,10 @@ class _RotatePageState extends State<RotatePage>
               ],
             ),
             const SizedBox(height: 20),
-            Image(
-              image: rotateImage!,
-            ),
+            if (rotateImage != null)
+              RawImage(
+                image: rotateImage!,
+              ),
           ],
         ),
       ),
